@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RE.cipe — Your Recipes, Your Terminal</title>
+  <meta name="description" content="A TUI-styled recipe management app. Organize recipes, plan weekly meals, and build shopping lists." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <span class="logo">[RE.cipe]</span>
+    <div class="nav-links">
+      <a href="#features">features</a>
+      <a href="#how">how it works</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost">&gt; login</button>
+      <button class="btn btn-primary">&gt; sign_up</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="eyebrow">// terminal-native recipe management</p>
+    <h1 class="hero-title">
+      <span class="hero-title-text"><span class="accent">RE.</span>CIPE</span><span class="cursor"></span>
+    </h1>
+    <p class="hero-sub">Your recipes. Your terminal. No clutter, no complexity.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary large">&gt; get_started --free</button>
+      <button class="btn btn-ghost large">&gt; view_demo</button>
+    </div>
+    <p class="scroll-hint">&gt; scroll to explore</p>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- TERMINAL DEMO -->
+  <section class="section" id="demo">
+    <p class="label">live demo</p>
+    <h2>See it in action</h2>
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="term-title">re.cipe — v1.0.0</span>
+      </div>
+      <div class="term-body">
+        <div class="t-cmd">$ re.cipe --open "My Recipes"</div>
+        <div class="t-dim">▼ /My Recipes/</div>
+        <div class="t-dim">&nbsp;&nbsp;&nbsp;&nbsp;▼ /Pasta/</div>
+        <div class="t-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Carbonara&nbsp;&nbsp;&nbsp;[25min **o]</div>
+        <div class="t-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Lasagna&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[90min ***]</div>
+        <div class="t-dim">&nbsp;&nbsp;&nbsp;&nbsp;▷ /Soups/</div>
+        <div>&nbsp;</div>
+        <div class="t-cmd">$ re.cipe filter --ingredients eggs bacon</div>
+        <div class="t-acc">&nbsp;&nbsp;&nbsp;&nbsp;[x] eggs&nbsp;&nbsp;&nbsp;&nbsp;&lt;- 3 recipes</div>
+        <div class="t-acc">&nbsp;&nbsp;&nbsp;&nbsp;[x] bacon&nbsp;&nbsp;&nbsp;&lt;- 2 recipes</div>
+        <div class="t-dim">&nbsp;&nbsp;&nbsp;&nbsp;[ ] chicken</div>
+        <div class="t-acc">&gt; 3 recipes matched ✓</div>
+        <div>&nbsp;</div>
+        <div class="t-cmd">$ re.cipe shop_list --week</div>
+        <div class="t-acc">&nbsp;&nbsp;-&gt; 14 items across 6 recipes&nbsp;&nbsp;✓<span class="term-cursor"></span></div>
+      </div>
+      <div class="term-status">
+        <span class="status-dot"></span>
+        <span>DONE</span>
+        <span style="margin-left:auto">15/15 lines</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <p class="label">features</p>
+    <h2>Everything you need</h2>
+    <div class="cards">
+
+      <div class="card">
+        <p class="card-tag">recipe management</p>
+        <h3>File-Tree Browser</h3>
+        <p>Organize recipes in nested folders. Collapse and expand like a real file explorer.</p>
+        <div class="preview">▼ /My Recipes/
+    ▼ /Pasta/
+        <span class="hl">- Carbonara   [25min **o]</span>
+        <span class="hl">- Lasagna     [90min ***]</span>
+    ▷ /Soups/</div>
+      </div>
+
+      <div class="card">
+        <p class="card-tag">smart filtering</p>
+        <h3>Ingredient Filter</h3>
+        <p>Select ingredients and watch matching recipes highlight instantly.</p>
+        <div class="preview">▼ /Ingredients  [filter: on]
+    <span class="hl">[x] eggs    &lt;- 3 recipes</span>
+    <span class="hl">[x] bacon   &lt;- 1 recipe</span>
+    [ ] chicken
+    [ ] cream
+<span class="hl">&gt; 4 matches found ✓</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-tag">meal planning</p>
+        <h3>Weekly Planner</h3>
+        <p>Assign recipes to days and meals. Auto-generate your shopping list.</p>
+        <div class="preview">▼ /Monday
+    <span class="hl">&gt; Breakfast: Oatmeal</span>
+    <span class="hl">&gt; Dinner:   Carbonara</span>
+▷ /Tuesday  [0 meals]
+
+<span class="hl">&gt; shop_list() -&gt; 12 items ✓</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- THEME SWITCHER -->
+  <section class="section" id="themes">
+    <p class="label">personalization</p>
+    <h2>Make it yours</h2>
+    <p class="muted">Pick a colour scheme for your terminal:</p>
+
+    <!-- CSS-only theme switcher using hidden radio inputs -->
+    <div class="theme-picker">
+      <input type="radio" name="theme" id="t-green"  class="theme-radio" checked />
+      <input type="radio" name="theme" id="t-amber"  class="theme-radio" />
+      <input type="radio" name="theme" id="t-cyan"   class="theme-radio" />
+      <input type="radio" name="theme" id="t-rose"   class="theme-radio" />
+      <input type="radio" name="theme" id="t-violet" class="theme-radio" />
+
+      <div class="theme-row">
+        <label for="t-green"  class="swatch" data-theme="green" ><span class="swatch-dot" style="background:#00ff88"></span>green</label>
+        <label for="t-amber"  class="swatch" data-theme="amber" ><span class="swatch-dot" style="background:#ffb300"></span>amber</label>
+        <label for="t-cyan"   class="swatch" data-theme="cyan"  ><span class="swatch-dot" style="background:#00d4ff"></span>cyan</label>
+        <label for="t-rose"   class="swatch" data-theme="rose"  ><span class="swatch-dot" style="background:#ff4d6d"></span>rose</label>
+        <label for="t-violet" class="swatch" data-theme="violet"><span class="swatch-dot" style="background:#a855f7"></span>violet</label>
+      </div>
+
+      <div class="terminal theme-terminal">
+        <div class="term-bar">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          <span class="term-title">~/.recipe/config</span>
+        </div>
+        <div class="term-body">
+          <div>colorScheme = <span class="theme-name-green  theme-display">"green"</span>
+                            <span class="theme-name-amber  theme-display">"amber"</span>
+                            <span class="theme-name-cyan   theme-display">"cyan"</span>
+                            <span class="theme-name-rose   theme-display">"rose"</span>
+                            <span class="theme-name-violet theme-display">"violet"</span>
+          </div>
+          <div>username    = <span class="acc">"chef_42"</span></div>
+          <div>ascii_art   = <span class="t-dim">"ramen_bowl.txt"</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <p class="label">workflow</p>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <p class="step-cmd">register()</p>
+        <p>Create your account and pick a colour scheme.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <p class="step-cmd">add_recipes()</p>
+        <p>Add recipes with ingredients, steps, and cook time.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <p class="step-cmd">plan_week()</p>
+        <p>Assign recipes to each day and meal slot.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <p class="step-cmd">shop_list()</p>
+        <p>Auto-generate a shopping list from your week plan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <pre class="ascii-art">
+██████╗ ███████╗
+██╔══██╗██╔════╝
+██████╔╝█████╗  
+██╔══██╗██╔══╝  
+██║  ██║███████╗
+╚═╝  ╚═╝╚══════╝
+           .cipe</pre>
+    <p class="label">ready?</p>
+    <h2>&gt; init_account()</h2>
+    <p class="muted">Free forever. No credit card. Just your recipes.</p>
+    <form class="cta-form" action="#" method="post">
+      <input type="email" placeholder="your@email.com" autocomplete="email" required />
+      <button type="submit" class="btn btn-primary">&gt; join waitlist</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span class="logo">[RE.cipe]</span>
+    <div class="footer-links">
+      <a href="#demo">demo</a>
+      <a href="#features">features</a>
+      <a href="#how">workflow</a>
+    </div>
+    <span class="muted">v0.1</span>
+  </footer>
+
+</body>
+</html>
