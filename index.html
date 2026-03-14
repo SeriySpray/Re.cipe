@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RE.cipe — Your Recipes, Your Terminal</title>
-  <meta name="description" content="A TUI-styled recipe management app. Organize recipes, plan weekly meals, and build shopping lists." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -16,25 +15,26 @@
   <nav class="navbar">
     <span class="logo">[RE.cipe]</span>
     <div class="nav-links">
+      <a href="#demo">demo</a>
       <a href="#features">features</a>
-      <a href="#how">how it works</a>
+      <a href="#themes">themes</a>
+      <a href="#how">workflow</a>
     </div>
     <div class="nav-actions">
-      <button class="btn btn-ghost">&gt; login</button>
-      <button class="btn btn-primary">&gt; sign_up</button>
+      <a href="auth.html" class="btn btn-ghost">&gt; login</a>
+      <a href="auth.html#register" class="btn btn-primary">&gt; sign_up</a>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <p class="eyebrow">// terminal-native recipe management</p>
+    <p class="eyebrow">// terminal-style recipe management</p>
     <h1 class="hero-title">
       <span class="hero-title-text"><span class="accent">RE.</span>CIPE</span><span class="cursor"></span>
     </h1>
     <p class="hero-sub">Your recipes. Your terminal. No clutter, no complexity.</p>
     <div class="hero-cta">
-      <button class="btn btn-primary large">&gt; get_started --free</button>
-      <button class="btn btn-ghost large">&gt; view_demo</button>
+      <a href="auth.html#register" class="btn btn-primary large">&gt; get_started --free</a>
     </div>
     <p class="scroll-hint">&gt; scroll to explore</p>
   </section>
@@ -111,7 +111,7 @@
       <div class="card">
         <p class="card-tag">meal planning</p>
         <h3>Weekly Planner</h3>
-        <p>Assign recipes to days and meals. Auto-generate your shopping list.</p>
+        <p>Assign recipes to days and meals. Auto-generate your shopping list, without any trouble.</p>
         <div class="preview">▼ /Monday
     <span class="hl">&gt; Breakfast: Oatmeal</span>
     <span class="hl">&gt; Dinner:   Carbonara</span>
@@ -209,20 +209,12 @@
     <p class="label">ready?</p>
     <h2>&gt; init_account()</h2>
     <p class="muted">Free forever. No credit card. Just your recipes.</p>
-    <form class="cta-form" action="#" method="post">
-      <input type="email" placeholder="your@email.com" autocomplete="email" required />
-      <button type="submit" class="btn btn-primary">&gt; join waitlist</button>
-    </form>
+    <a href="auth.html#register" class="btn btn-primary large">&gt; create_account()</a>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
     <span class="logo">[RE.cipe]</span>
-    <div class="footer-links">
-      <a href="#demo">demo</a>
-      <a href="#features">features</a>
-      <a href="#how">workflow</a>
-    </div>
     <span class="muted">v0.1</span>
   </footer>
 
