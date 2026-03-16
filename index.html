@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
+  <!--NAVBAR-->
   <nav class="navbar">
     <span class="logo">[RE.cipe]</span>
     <div class="nav-links">
@@ -26,7 +26,7 @@
     </div>
   </nav>
 
-  <!-- HERO -->
+  <!--HERO-->
   <section class="hero">
     <p class="eyebrow">// terminal-style recipe management</p>
     <h1 class="hero-title">
@@ -41,7 +41,7 @@
 
   <hr class="divider" />
 
-  <!-- TERMINAL DEMO -->
+  <!--TERMINAL DEMO-->
   <section class="section" id="demo">
     <p class="label">live demo</p>
     <h2>See it in action</h2>
@@ -50,7 +50,7 @@
         <span class="dot red"></span>
         <span class="dot yellow"></span>
         <span class="dot green"></span>
-        <span class="term-title">re.cipe — v1.0.0</span>
+        <span class="term-title">re.cipe — v0.1</span>
       </div>
       <div class="term-body">
         <div class="t-cmd">$ re.cipe --open "My Recipes"</div>
@@ -79,7 +79,7 @@
 
   <hr class="divider" />
 
-  <!-- FEATURES -->
+  <!--FEATURES-->
   <section class="section" id="features">
     <p class="label">features</p>
     <h2>Everything you need</h2>
@@ -91,8 +91,8 @@
         <p>Organize recipes in nested folders. Collapse and expand like a real file explorer.</p>
         <div class="preview">▼ /My Recipes/
     ▼ /Pasta/
-        <span class="hl">- Carbonara   [25min **o]</span>
-        <span class="hl">- Lasagna     [90min ***]</span>
+        <span class="t-cmd">- Carbonara   [25min **o]</span>
+        <span class="t-cmd">- Lasagna     [90min ***]</span>
     ▷ /Soups/</div>
       </div>
 
@@ -101,11 +101,11 @@
         <h3>Ingredient Filter</h3>
         <p>Select ingredients and watch matching recipes highlight instantly.</p>
         <div class="preview">▼ /Ingredients  [filter: on]
-    <span class="hl">[x] eggs    &lt;- 3 recipes</span>
-    <span class="hl">[x] bacon   &lt;- 1 recipe</span>
+    <span class="t-cmd">[x] eggs    &lt;- 3 recipes</span>
+    <span class="t-cmd">[x] bacon   &lt;- 1 recipe</span>
     [ ] chicken
     [ ] cream
-<span class="hl">&gt; 4 matches found ✓</span></div>
+<span class="t-cmd">&gt; 4 matches found ✓</span></div>
       </div>
 
       <div class="card">
@@ -113,11 +113,11 @@
         <h3>Weekly Planner</h3>
         <p>Assign recipes to days and meals. Auto-generate your shopping list, without any trouble.</p>
         <div class="preview">▼ /Monday
-    <span class="hl">&gt; Breakfast: Oatmeal</span>
-    <span class="hl">&gt; Dinner:   Carbonara</span>
+    <span class="t-cmd">&gt; Breakfast: Oatmeal</span>
+    <span class="t-cmd">&gt; Dinner:   Carbonara</span>
 ▷ /Tuesday  [0 meals]
 
-<span class="hl">&gt; shop_list() -&gt; 12 items ✓</span></div>
+<span class="t-cmd">&gt; shop_list() -&gt; 12 items ✓</span></div>
       </div>
 
     </div>
@@ -125,13 +125,12 @@
 
   <hr class="divider" />
 
-  <!-- THEME SWITCHER -->
+  <!--THEME SWITCHER-->
   <section class="section" id="themes">
     <p class="label">personalization</p>
     <h2>Make it yours</h2>
     <p class="muted">Pick a colour scheme for your terminal:</p>
 
-    <!-- CSS-only theme switcher using hidden radio inputs -->
     <div class="theme-picker">
       <input type="radio" name="theme" id="t-green"  class="theme-radio" checked />
       <input type="radio" name="theme" id="t-amber"  class="theme-radio" />
@@ -140,11 +139,11 @@
       <input type="radio" name="theme" id="t-violet" class="theme-radio" />
 
       <div class="theme-row">
-        <label for="t-green"  class="swatch" data-theme="green" ><span class="swatch-dot" style="background:#00ff88"></span>green</label>
-        <label for="t-amber"  class="swatch" data-theme="amber" ><span class="swatch-dot" style="background:#ffb300"></span>amber</label>
-        <label for="t-cyan"   class="swatch" data-theme="cyan"  ><span class="swatch-dot" style="background:#00d4ff"></span>cyan</label>
-        <label for="t-rose"   class="swatch" data-theme="rose"  ><span class="swatch-dot" style="background:#ff4d6d"></span>rose</label>
-        <label for="t-violet" class="swatch" data-theme="violet"><span class="swatch-dot" style="background:#a855f7"></span>violet</label>
+        <label for="t-green"  class="switch" data-theme="green" ><span class="switch-dot" style="background:#00ff88"></span>green</label>
+        <label for="t-amber"  class="switch" data-theme="amber" ><span class="switch-dot" style="background:#ffb300"></span>amber</label>
+        <label for="t-cyan"   class="switch" data-theme="cyan"  ><span class="switch-dot" style="background:#00d4ff"></span>cyan</label>
+        <label for="t-rose"   class="switch" data-theme="rose"  ><span class="switch-dot" style="background:#ff4d6d"></span>rose</label>
+        <label for="t-violet" class="switch" data-theme="violet"><span class="switch-dot" style="background:#a855f7"></span>violet</label>
       </div>
 
       <div class="terminal theme-terminal">
@@ -159,8 +158,8 @@
                             <span class="theme-name-rose   theme-display">"rose"</span>
                             <span class="theme-name-violet theme-display">"violet"</span>
           </div>
-          <div>username    = <span class="acc">"chef_42"</span></div>
-          <div>ascii_art   = <span class="t-dim">"ramen_bowl.txt"</span></div>
+          <div>username = <span class="acc">"chef_42"</span></div>
+          <div>ascii_art = <span class="t-dim">"ramen_bowl.txt"</span></div>
         </div>
       </div>
     </div>
@@ -168,7 +167,7 @@
 
   <hr class="divider" />
 
-  <!-- HOW IT WORKS -->
+  <!--HOW IT WORKS-->
   <section class="section" id="how">
     <p class="label">workflow</p>
     <h2>How it works</h2>
@@ -196,7 +195,7 @@
     </div>
   </section>
 
-  <!-- CTA -->
+  <!--СTA-->
   <section class="cta-section">
     <pre class="ascii-art">
 ██████╗ ███████╗
@@ -212,7 +211,7 @@
     <a href="auth.html#register" class="btn btn-primary large">&gt; create_account()</a>
   </section>
 
-  <!-- FOOTER -->
+  <!--FOOTER-->
   <footer class="footer">
     <span class="logo">[RE.cipe]</span>
     <span class="muted">v0.1</span>
