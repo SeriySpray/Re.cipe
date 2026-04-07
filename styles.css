@@ -57,7 +57,7 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .btn-ghost { color: var(--dim); border: 1px solid var(--border); }
 .btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
 .btn-primary { color: var(--bg); background: var(--accent); border: 1px solid var(--accent); font-weight: 700; }
-.btn-primary:hover { opacity: 0.85; }
+.btn-primary:hover { opacity: 0.85; color: var(--bg); }
 .btn.large { padding: 10px 22px; font-size: 13px; }
 
 /*Hero*/
@@ -111,7 +111,7 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .dot.green  { background: #28c840; }
 .term-title { flex: 1; text-align: center; font-size: 11px; color: var(--muted); }
 .term-body { padding: 16px 20px; font-size: 12px; line-height: 1.9/*compared to text size*/; min-height: 120px; }
-#termDemo  { height: 374px; overflow-y: auto; }
+#termDemo  { height: 374px; overflow: hidden; }
 /* terminal line colours */
 .t-cmd  { color: var(--accent); }
 .t-acc  { color: var(--accent); }
