@@ -11,6 +11,12 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="auth-page">
+  <script>
+    (function () {
+      var s = localStorage.getItem('recipe-theme');
+      if (s && s !== 'green') document.body.setAttribute('data-theme', s);
+    })();
+  </script>
 
   <!--NAVBAR-->
   <nav class="navbar">
@@ -182,14 +188,6 @@
   </footer>
 
   <script>
-    // Відновлюємо збережену тему з localStorage
-    (function () {
-      var saved = localStorage.getItem('recipe-theme');
-      if (saved && saved !== 'green') {
-        document.body.setAttribute('data-theme', saved);
-      }
-    })();
-
     // Switch to register tab when #register hash is present
     function applyHash() {
       if (window.location.hash === '#register') {

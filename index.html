@@ -10,6 +10,12 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <script>
+    (function () {
+      var s = localStorage.getItem('recipe-theme');
+      if (s && s !== 'green') document.body.setAttribute('data-theme', s);
+    })();
+  </script>
 
   <!--NAVBAR-->
   <nav class="navbar">
@@ -42,7 +48,7 @@
   <hr class="divider" />
 
   <!--TERMINAL DEMO-->
-  <section class="section" id="demo">
+  <section class="section" id="demo" data-reveal>
     <p class="label">live demo</p>
     <h2>See it in action</h2>
     <div class="terminal">
@@ -65,7 +71,7 @@
   <hr class="divider" />
 
   <!--FEATURES-->
-  <section class="section" id="features">
+  <section class="section" id="features" data-reveal>
     <p class="label">features</p>
     <h2>Everything you need</h2>
     <div class="cards">
@@ -111,7 +117,7 @@
   <hr class="divider" />
 
   <!--THEME SWITCHER-->
-  <section class="section" id="themes">
+  <section class="section" id="themes" data-reveal>
     <p class="label">personalization</p>
     <h2>Make it yours</h2>
     <p class="muted">Pick a colour scheme for your terminal:</p>
@@ -153,7 +159,7 @@
   <hr class="divider" />
 
   <!--HOW IT WORKS-->
-  <section class="section" id="how">
+  <section class="section" id="how" data-reveal>
     <p class="label">workflow</p>
     <h2>How it works</h2>
     <div class="steps">
@@ -181,7 +187,7 @@
   </section>
 
   <!--СTA-->
-  <section class="cta-section">
+  <section class="cta-section" data-reveal>
     <pre class="ascii-art">
 ██████╗ ███████╗
 ██╔══██╗██╔════╝
