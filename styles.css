@@ -28,7 +28,7 @@ body {
   line-height: 1.6;
 }
 a { color: var(--dim); text-decoration: none; }
-a:hover { color: var(--accent); }
+a:not(.btn):hover { color: var(--accent); }
 button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
 h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
@@ -57,7 +57,7 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .btn-ghost { color: var(--dim); border: 1px solid var(--border); }
 .btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
 .btn-primary { color: var(--bg); background: var(--accent); border: 1px solid var(--accent); font-weight: 700; }
-.btn-primary:hover { opacity: 0.85; color: var(--bg); }
+.btn-primary:hover { opacity: 0.85; }
 .btn.large { padding: 10px 22px; font-size: 13px; }
 
 /*Hero*/
