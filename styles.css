@@ -351,6 +351,23 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
 /*Animations*/
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
+/* ── JS: Active nav link ── */
+.nav-links a.nav-link--active {
+  color: var(--accent);
+}
+
+/* ── JS: Scroll-reveal ── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.5s ease, transform 2s ease;
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 /*Responsive*/
 @media (max-width: 768px) {
   /*Tablets and smaller phones*/
