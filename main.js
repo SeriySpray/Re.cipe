@@ -121,6 +121,7 @@ function runTermDemo() {
     }
 
     termBody.appendChild(div);
+    termBody.scrollTop = termBody.scrollHeight;
     i++;
     termCount.textContent = i + '/' + total + ' lines';
 

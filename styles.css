@@ -111,6 +111,7 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .dot.green  { background: #28c840; }
 .term-title { flex: 1; text-align: center; font-size: 11px; color: var(--muted); }
 .term-body { padding: 16px 20px; font-size: 12px; line-height: 1.9/*compared to text size*/; min-height: 120px; }
+#termDemo  { height: 374px; overflow-y: auto; }
 /* terminal line colours */
 .t-cmd  { color: var(--accent); }
 .t-acc  { color: var(--accent); }
