@@ -180,10 +180,18 @@ var App = {
         row.innerHTML =
           '<span class="suggestion-name">/' + item.name + '</span>' +
           '<span class="suggestion-desc">' + item.desc + '</span>';
+        row.addEventListener('mouseenter', function () {
+          panel.suggestEl.querySelectorAll('.pane-suggestion-item').forEach(function (r) {
+            r.classList.remove('focused');
+          });
+          row.classList.add('focused');
+          suggestIdx = i;
+        });
         row.addEventListener('mousedown', function (e) {
           e.preventDefault();
           panel.inputEl.value = '/' + item.name + ' ';
           el.style.display = 'none';
+          suggestIdx = -1;
           panel.inputEl.focus();
         });
         el.appendChild(row);

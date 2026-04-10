@@ -149,16 +149,55 @@ var Commands = (function () {
       return;
     }
 
-    ctx.print('// ' + data.length + ' recipe(s) found:', 't-dim');
-    ctx.print('', '');
-
+    ctx.print('// ' + data.length + ' recipe(s):', 't-dim');
     data.forEach(function (r, i) {
-      ctx.print('[' + (i + 1) + '] ' + r.name, 't-cmd');
+      ctx.print('  [' + (i + 1) + '] ' + r.name + '  [' + r.time + 'min]', 't-cmd');
+    });
+    ctx.print('// type a number to view recipe, Escape to exit', 't-dim');
+
+    var panel = ctx.panel;
+    var input = panel.inputEl;
+
+    panel._interactive = true;
+    panel.suggestEl.style.display = 'none';
+    input.removeEventListener('keydown', panel._mainKeydown);
+    input.placeholder = 'select recipe number...';
+
+    input.onkeydown = function (e) {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        restore();
+        return;
+      }
+      if (e.key !== 'Enter') return;
+
+      var val = input.value.trim();
+      input.value = '';
+
+      if (!val) { restore(); return; }
+
+      var idx = parseInt(val, 10) - 1;
+      if (isNaN(idx) || idx < 0 || idx >= data.length) {
+        ctx.print('// invalid number: ' + val, 't-dim');
+        return;
+      }
+
+      var r = data[idx];
+      ctx.print('', '');
+      ctx.print('[' + (idx + 1) + '] ' + r.name, 't-cmd');
       ctx.print('    ingredients : ' + r.ingredients, 't-text');
       ctx.print('    steps       : ' + r.steps, 't-text');
       ctx.print('    time        : ' + r.time + ' min', 't-text');
       ctx.print('', '');
-    });
+      ctx.print('// type another number or Escape to exit', 't-dim');
+    };
+
+    function restore() {
+      panel._interactive = false;
+      input.placeholder = 'write here...';
+      input.onkeydown = null;
+      input.addEventListener('keydown', panel._mainKeydown);
+    }
   });
 
   // ─────────────────────────────────────────────────────────────

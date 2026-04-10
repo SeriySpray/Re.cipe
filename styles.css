@@ -524,7 +524,6 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
   cursor: pointer;
   transition: background 0.1s;
 }
-.pane-suggestion-item:hover,
 .pane-suggestion-item.focused {
   background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
