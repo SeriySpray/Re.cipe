@@ -198,6 +198,18 @@
     }
     applyHash();
     window.addEventListener('hashchange', applyHash);
+
+    // Redirect to app after form submit (login and register)
+    document.querySelectorAll('.auth-form').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var usernameInput = form.querySelector('input[name="username"]');
+        if (usernameInput && usernameInput.value.trim()) {
+          localStorage.setItem('recipe-user', usernameInput.value.trim());
+        }
+        window.location.href = 'app.html';
+      });
+    });
   </script>
 </body>
 </html>

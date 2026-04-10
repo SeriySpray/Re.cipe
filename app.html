@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RE.cipe — Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app-page">
+  <script>
+    (function () {
+      var s = localStorage.getItem('recipe-theme');
+      if (s && s !== 'green') document.body.setAttribute('data-theme', s);
+    })();
+  </script>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <span class="logo">[RE.cipe]</span>
+    <div class="nav-links">
+      <span id="topbarUsername" class="t-dim">guest</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" id="btnLogout">&gt; logout</button>
+    </div>
+  </nav>
+
+  <!-- WORKSPACE: panels injected here by app.js -->
+  <div class="workspace" id="workspace"></div>
+
+  <!-- KEY HINTS -->
+  <div class="keyhints">
+    <span><span class="keyhint-key">Tab</span> new / switch</span>
+    <span><span class="keyhint-key">Esc</span> close panel</span>
+    <span><span class="keyhint-key">Enter</span> new line</span>
+  </div>
+
+  <script src="commands.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
