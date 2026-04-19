@@ -200,6 +200,84 @@ var Commands = (function () {
     }
   });
 
+  // ── Built-in: delete ──────────────────────────────────────────
+  register('delete', 'delete a recipe: /delete [number]', function (ctx) {
+    var data = JSON.parse(localStorage.getItem('recipe-data') || '[]');
+
+    if (data.length === 0) {
+      ctx.print('// no recipes to delete.', 't-dim');
+      return;
+    }
+
+    var panel = ctx.panel;
+    var input = panel.inputEl;
+    var preselected = parseInt(ctx.args[0], 10);
+
+    function restore() {
+      panel._interactive = false;
+      input.placeholder = 'write here...';
+      input.onkeydown = null;
+      input.addEventListener('keydown', panel._mainKeydown);
+    }
+
+    function askConfirm(idx) {
+      var r = data[idx];
+      ctx.print('// delete "' + r.name + '"? [y/n]', 't-dim');
+      input.placeholder = 'y / n';
+
+      input.onkeydown = function (e) {
+        if (e.key === 'Escape') { e.stopPropagation(); ctx.print('// cancelled', 't-dim'); restore(); return; }
+        if (e.key !== 'Enter') return;
+        var val = input.value.trim().toLowerCase();
+        input.value = '';
+        if (val === 'y' || val === 'yes') {
+          data.splice(idx, 1);
+          localStorage.setItem('recipe-data', JSON.stringify(data));
+          ctx.print('[ OK ] "' + r.name + '" deleted.', 't-cmd');
+        } else {
+          ctx.print('// cancelled', 't-dim');
+        }
+        restore();
+      };
+    }
+
+    function askNumber() {
+      ctx.print('// ' + data.length + ' recipe(s):', 't-dim');
+      data.forEach(function (r, i) {
+        ctx.print('  [' + (i + 1) + '] ' + r.name + '  [' + r.time + 'min]', 't-text');
+      });
+      ctx.print('// enter number to delete, Escape to cancel', 't-dim');
+
+      panel._interactive = true;
+      panel.suggestEl.style.display = 'none';
+      input.removeEventListener('keydown', panel._mainKeydown);
+      input.placeholder = 'recipe number...';
+
+      input.onkeydown = function (e) {
+        if (e.key === 'Escape') { e.stopPropagation(); ctx.print('// cancelled', 't-dim'); restore(); return; }
+        if (e.key !== 'Enter') return;
+        var val = input.value.trim();
+        input.value = '';
+        var idx = parseInt(val, 10) - 1;
+        if (isNaN(idx) || idx < 0 || idx >= data.length) {
+          ctx.print('// invalid number: ' + val, 't-dim');
+          return;
+        }
+        askConfirm(idx);
+      };
+    }
+
+    panel._interactive = true;
+    panel.suggestEl.style.display = 'none';
+    input.removeEventListener('keydown', panel._mainKeydown);
+
+    if (!isNaN(preselected) && preselected >= 1 && preselected <= data.length) {
+      askConfirm(preselected - 1);
+    } else {
+      askNumber();
+    }
+  });
+
   // ─────────────────────────────────────────────────────────────
   // ДОДАВАЙ НОВІ КОМАНДИ НИЖЧЕ
   // Приклад:
