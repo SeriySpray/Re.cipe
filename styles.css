@@ -36,7 +36,7 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 /*Navbar*/
 .navbar {
   position: fixed; top: 0; left: 0; right: 0;
-  display: flex; align-items: center; gap: 32px;
+  display: flex; align-items: center; gap: 8px;
   padding: 0 40px; height: 52px;
   background: rgba(13,13,13,0.92);
   border-bottom: 1px solid var(--border);
