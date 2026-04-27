@@ -8,37 +8,110 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="app-page">
   <script>
     (function () {
       var s = localStorage.getItem('recipe-theme');
       if (s && s !== 'green') document.body.setAttribute('data-theme', s);
     })();
   </script>
+</head>
+<body class="app-page">
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <span class="logo">[RE.cipe]</span>
-    <div class="nav-links">
-      <span id="topbarUsername" class="t-dim">guest</span>
+    <span class="nav-sep">/</span>
+    <span class="nav-user" id="navUser">// guest</span>
+    <div class="theme-swatches">
+      <button class="swatch" data-theme-name="green"  style="background:#00ff88"></button>
+      <button class="swatch" data-theme-name="amber"  style="background:#ffb300"></button>
+      <button class="swatch" data-theme-name="cyan"   style="background:#00d4ff"></button>
+      <button class="swatch" data-theme-name="rose"   style="background:#ff4d6d"></button>
+      <button class="swatch" data-theme-name="violet" style="background:#a855f7"></button>
     </div>
-    <div class="nav-actions">
-      <button class="btn btn-ghost" id="btnLogout">&gt; logout</button>
-    </div>
+    <button class="btn btn-ghost" id="btnLogout">&gt; logout</button>
   </nav>
 
-  <!-- WORKSPACE: panels injected here by app.js -->
-  <div class="workspace" id="workspace"></div>
+  <div class="workspace">
 
-  <!-- KEY HINTS -->
-  <div class="keyhints">
-    <span><span class="keyhint-key">Tab</span> new / switch</span>
-    <span><span class="keyhint-key">Esc</span> close panel</span>
-    <span><span class="keyhint-key">Enter</span> new line</span>
+    <!-- LEFT: ADD / EDIT RECIPE -->
+    <div class="panel" id="formPanel">
+      <div class="panel-bar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="panel-label" id="formPanelLabel">re.cipe — new_recipe</span>
+      </div>
+
+      <div class="form-scroll">
+        <p class="form-comment">// fill in fields and press save</p>
+
+        <div class="field">
+          <label class="f-label" for="fName">name</label>
+          <input class="f-input" id="fName" type="text"
+                 autocomplete="off" spellcheck="false" placeholder="Carbonara" />
+        </div>
+
+        <div class="field">
+          <label class="f-label" for="fIngredients">ingredients</label>
+          <textarea class="f-input f-textarea" id="fIngredients"
+                    autocomplete="off" spellcheck="false"
+                    placeholder="eggs, bacon, pasta..."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="f-label" for="fSteps">steps</label>
+          <textarea class="f-input f-textarea" id="fSteps"
+                    autocomplete="off" spellcheck="false"
+                    placeholder="boil pasta, fry bacon..."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="f-label" for="fTime">cook_time_min</label>
+          <input class="f-input" id="fTime" type="number" min="1"
+                 autocomplete="off" placeholder="25" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-save" id="btnSave">save_recipe</button>
+        <button class="btn-clear" id="btnClear">clear</button>
+      </div>
+
+      <div class="panel-status">
+        <span class="sdot"></span>
+        <span id="formStatus">READY</span>
+        <span class="panel-status-right">v0.2</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: RECIPES MASTER-DETAIL -->
+    <div class="panel" id="recipesPanel">
+      <div class="panel-bar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="panel-label" id="recipesPanelLabel">re.cipe — recipes (0)</span>
+      </div>
+
+      <div class="md-body">
+        <div class="r-list" id="recipeList"></div>
+        <div class="r-detail" id="recipeDetail">
+          <div class="empty-state">
+            <div class="empty-text">// no recipes yet</div>
+            <div class="empty-sub">add one using the form</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-status">
+        <span class="sdot"></span>
+        <span id="recipesStatus">0 recipes</span>
+        <span class="panel-status-right" id="recipesStatusRight">v0.2</span>
+      </div>
+    </div>
+
   </div>
 
-  <script src="commands.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
