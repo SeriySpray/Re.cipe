@@ -1,22 +1,31 @@
-// ── Data ─────────────────────────────────────────────────────────
+// api.js must be loaded before this file (see app.html)
 
-function loadRecipes() {
-  try { return JSON.parse(localStorage.getItem('recipe-data') || '[]'); }
-  catch (e) { return []; }
+// ── Format helpers ────────────────────────────────────────────────
+// Converts the API recipe shape to the shape used by renderList/renderDetail
+
+function toLocalFormat(r) {
+  return {
+    id:          r.id,
+    name:        r.title,
+    ingredients: (r.ingredients || []).map(function (i) { return i.name; }).join('\n'),
+    steps:       r.description || '',
+    time:        r.cook_time ? String(r.cook_time) : ''
+  };
 }
 
-function saveRecipes(data) {
-  localStorage.setItem('recipe-data', JSON.stringify(data));
-}
-
-// ── Helpers ───────────────────────────────────────────────────────
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+// Converts the form values shape to the API request body shape
+function toApiFormat(local) {
+  return {
+    title:       local.name,
+    description: local.steps  || null,
+    cook_time:   local.time   ? parseInt(local.time, 10) : null,
+    ingredients: local.ingredients
+      ? local.ingredients.split('\n')
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean)
+          .map(function (s) { return { name: s }; })
+      : []
+  };
 }
 
 // ── State ─────────────────────────────────────────────────────────
@@ -61,8 +70,25 @@ function initAuth() {
   document.getElementById('recipesStatusRight').textContent = username + '  ·  v0.2';
 
   document.getElementById('btnLogout').addEventListener('click', function () {
+    localStorage.removeItem('recipe-token');
+    localStorage.removeItem('recipe-user');
     window.location.href = 'auth.html';
   });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function setFormStatus(text) {
+  var el = document.getElementById('formStatus');
+  if (el) el.textContent = text;
 }
 
 // ── Form ─────────────────────────────────────────────────────────
@@ -115,32 +141,59 @@ function setFormMode(mode) {
   document.getElementById('btnSave').textContent = isEdit
     ? 'update_recipe'
     : 'save_recipe';
-  document.getElementById('formStatus').textContent = isEdit ? 'EDITING' : 'READY';
+  setFormStatus(isEdit ? 'EDITING' : 'READY');
 }
 
-function handleSave() {
+async function handleSave() {
   var vals = getFormValues();
   if (!vals.name) { document.getElementById('fName').focus(); return; }
 
-  var data = loadRecipes();
+  setFormStatus('SAVING...');
 
-  if (state.editIdx >= 0) {
-    data[state.editIdx] = vals;
-  } else {
-    data.push(vals);
+  try {
+    var res;
+    if (state.editIdx >= 0) {
+      var id = state.recipes[state.editIdx].id;
+      res = await apiFetch('/api/recipes/' + id, {
+        method: 'PUT',
+        body:   JSON.stringify(toApiFormat(vals))
+      });
+    } else {
+      res = await apiFetch('/api/recipes', {
+        method: 'POST',
+        body:   JSON.stringify(toApiFormat(vals))
+      });
+    }
+
+    if (!res || !res.ok) { setFormStatus('ERR — save failed'); return; }
+
+    clearForm();
+    await reloadRecipes();
+  } catch (e) {
+    setFormStatus('ERR — server unavailable');
   }
-
-  saveRecipes(data);
-  state.recipes = data;
-
-  var selectIdx = state.editIdx >= 0 ? state.editIdx : data.length - 1;
-  clearForm();
-  renderList(selectIdx);
-  renderDetail(selectIdx);
 }
 
 function handleClear() {
   clearForm();
+}
+
+// ── API ───────────────────────────────────────────────────────────
+
+async function reloadRecipes() {
+  setFormStatus('LOADING...');
+  try {
+    var res = await apiFetch('/api/recipes');
+    if (!res || !res.ok) { setFormStatus('ERR — load failed'); return; }
+    var data = await res.json();
+    state.recipes = data.map(toLocalFormat);
+    var initIdx = state.recipes.length > 0 ? 0 : -1;
+    renderList(initIdx);
+    renderDetail(initIdx);
+    setFormStatus('READY');
+  } catch (e) {
+    setFormStatus('ERR — server unavailable');
+  }
 }
 
 // ── List ─────────────────────────────────────────────────────────
@@ -217,13 +270,11 @@ function renderDetail(idx) {
     '</div>' +
     '<div class="detail-block">' +
       '<div class="f-label">ingredients</div>' +
-      '<div class="detail-val">' + escapeHtml(r.ingredients || '—') + '</div>' +
+      '<div class="detail-val">' + escapeHtml(r.ingredients || '—').replace(/\n/g, '<br>') + '</div>' +
     '</div>' +
     '<div class="detail-block">' +
       '<div class="f-label">steps</div>' +
-      '<div class="detail-val">' +
-        escapeHtml(r.steps || '—').replace(/\n/g, '<br>') +
-      '</div>' +
+      '<div class="detail-val">' + escapeHtml(r.steps || '—').replace(/\n/g, '<br>') + '</div>' +
     '</div>' +
     '<div class="detail-foot">' +
       '<button class="btn-edit" id="btnEdit">edit</button>' +
@@ -254,29 +305,30 @@ function handleEdit(idx) {
   document.getElementById('fName').focus();
 }
 
-function handleDelete(idx) {
-  var data = loadRecipes();
-  data.splice(idx, 1);
-  saveRecipes(data);
-  state.recipes = data;
+async function handleDelete(idx) {
+  var id = state.recipes[idx].id;
+  setFormStatus('DELETING...');
 
-  if (state.editIdx === idx) {
-    clearForm();
+  try {
+    var res = await apiFetch('/api/recipes/' + id, { method: 'DELETE' });
+    if (!res || !res.ok) { setFormStatus('ERR — delete failed'); return; }
+    if (state.editIdx === idx) clearForm();
+    await reloadRecipes();
+  } catch (e) {
+    setFormStatus('ERR — server unavailable');
   }
-
-  var nextIdx = data.length > 0 ? Math.min(idx, data.length - 1) : -1;
-  renderList(nextIdx);
-  renderDetail(nextIdx);
 }
 
 // ── Init ──────────────────────────────────────────────────────────
 
-(function init() {
-  state.recipes = loadRecipes();
+(async function init() {
+  if (!localStorage.getItem('recipe-token')) {
+    window.location.href = 'auth.html';
+    return;
+  }
+
   initTheme();
   initAuth();
   initForm();
-  var initIdx = state.recipes.length > 0 ? 0 : -1;
-  renderList(initIdx);
-  renderDetail(initIdx);
+  await reloadRecipes();
 }());
