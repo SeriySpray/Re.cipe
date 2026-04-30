@@ -188,7 +188,6 @@
   </footer>
 
   <script>
-    // Switch to register tab when #register hash is present
     function applyHash() {
       if (window.location.hash === '#register') {
         document.getElementById('tab-register').checked = true;
@@ -198,18 +197,8 @@
     }
     applyHash();
     window.addEventListener('hashchange', applyHash);
-
-    // Redirect to app after form submit (login and register)
-    document.querySelectorAll('.auth-form').forEach(function (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var usernameInput = form.querySelector('input[name="username"]');
-        if (usernameInput && usernameInput.value.trim()) {
-          localStorage.setItem('recipe-user', usernameInput.value.trim());
-        }
-        window.location.href = 'app.html';
-      });
-    });
   </script>
+  <script src="api.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>
