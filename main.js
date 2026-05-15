@@ -1,4 +1,3 @@
-
 //THEME SWITCHER: зміна кольору всього сайту
 var themeRadios = document.querySelectorAll('.theme-radio');
 
