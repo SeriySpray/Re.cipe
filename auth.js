@@ -26,7 +26,8 @@ loginForm.addEventListener('submit', async function (e) {
   setAuthStatus('login', 'CONNECTING...');
 
   try {
-    var res  = await fetch(API + '/api/auth/login', {
+    console.log('[auth] Login attempt to:', window.API + '/api/auth/login');
+    var res  = await fetch(window.API + '/api/auth/login', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ email: email, password: password })
@@ -71,7 +72,8 @@ registerForm.addEventListener('submit', async function (e) {
   setAuthStatus('register', 'CONNECTING...');
 
   try {
-    var res  = await fetch(API + '/api/auth/register', {
+    console.log('[auth] Register attempt to:', window.API + '/api/auth/register');
+    var res  = await fetch(window.API + '/api/auth/register', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ email: email, password: password, display_name: username })

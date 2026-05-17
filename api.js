@@ -3,11 +3,11 @@
 var API_HOST = 'http://192.168.31.100:3000';
 
 // Use localhost if we are on the same machine, otherwise use the network IP
-var API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+window.API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3000'
   : API_HOST;
 
-async function apiFetch(path, options) {
+window.apiFetch = async function(path, options) {
   options = options || {};
   var token = localStorage.getItem('recipe-token');
   var headers = { 'Content-Type': 'application/json' };
