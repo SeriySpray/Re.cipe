@@ -1,6 +1,6 @@
 // ─── RE.cipe: Main Script ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('RE.cipe: Initializing system...');
+  console.log('RE.cipe: System startup...');
 
   // 1. THEME SWITCHER
   var themeRadios = document.querySelectorAll('.theme-radio');
@@ -14,10 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.setAttribute('data-theme', theme);
       }
       localStorage.setItem('recipe-theme', theme);
+      console.log('Theme changed to:', theme);
     });
   });
 
-  // Відновлюємо збережену тему
+  // Restore saved theme
   (function () {
     var saved = localStorage.getItem('recipe-theme');
     if (saved && saved !== 'green') {
@@ -46,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var heroSub = document.getElementById('heroSub');
   var heroCta = document.getElementById('heroCta');
 
-  // Приховуємо елементи перед анімацією (Fail-safe: вони видимі в CSS)
   if (heroSub) heroSub.style.opacity = '0';
   if (heroCta) heroCta.style.opacity = '0';
 
@@ -170,7 +170,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // 7. INTERACTIVE GRID CANVAS
 (function() {
   var canvas = document.getElementById('gridCanvas');
-  if (!canvas) return;
+  if (!canvas) {
+    console.log('Grid canvas not found, skipping background animation.');
+    return;
+  }
+  console.log('Initializing interactive grid...');
   var ctx = canvas.getContext('2d');
   var mouse = { x: -1000, y: -1000 };
   var scrollY = window.pageYOffset;
@@ -205,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var style = getComputedStyle(document.body);
     var color = style.getPropertyValue('--accent').trim();
     
+    // Check for hex
     if (color.startsWith('#')) {
       var r = parseInt(color.slice(1, 3), 16);
       var g = parseInt(color.slice(3, 5), 16);
@@ -212,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return { r: r, g: g, b: b };
     }
     
+    // Check for rgb
     var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
     if (match) {
       return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
@@ -221,7 +227,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   var baseColor = getAccentColor();
-  var themeObserver = new MutationObserver(function() { baseColor = getAccentColor(); });
+  var themeObserver = new MutationObserver(function() { 
+    baseColor = getAccentColor();
+    console.log('Grid color updated:', baseColor);
+  });
   themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
 
   function animate() {
@@ -240,8 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         var drawX = dotX;
         var drawY = dotY;
-        var opacity = 0.12; 
-        var radius = 1.3;
+        var opacity = 0.15; // Slightly higher base opacity
+        var radius = 1.4;   // Slightly larger base radius
         
         if (dist < avoidanceRadius) {
           var force = (avoidanceRadius - dist) / avoidanceRadius;
@@ -251,8 +260,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (dist < glowRadius) {
           var glow = (glowRadius - dist) / glowRadius;
-          opacity += Math.pow(glow, 1.5) * 0.88; 
-          radius += glow * 1.2;
+          opacity += Math.pow(glow, 1.5) * 0.85; 
+          radius += glow * 1.3;
         }
         
         ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
