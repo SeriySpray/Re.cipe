@@ -369,8 +369,6 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
 
 /* ── JS: Scroll-reveal ── */
 [data-reveal] {
-  opacity: 0;
-  transform: translateY(20px);
   transition: opacity 1.5s ease, transform 2s ease;
 }
 [data-reveal].revealed {
@@ -625,3 +623,4 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
 }
 .empty-text { font-size: 11px; color: var(--border); letter-spacing: 0.06em; }
 .empty-sub  { font-size: 10px; color: var(--muted); }
+olor: var(--muted); }
