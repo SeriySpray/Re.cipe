@@ -380,6 +380,10 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
   transform: translateY(0);
 }
 
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+}
+
 
 /* ══════════════════════════════════════════
    App Page
