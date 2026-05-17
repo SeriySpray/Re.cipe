@@ -95,9 +95,10 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .hero-cta { display: flex; gap: 12px; flex-wrap: wrap/*auto next line*/; justify-content: center; opacity: 0; }
 .scroll-hint {
   position: absolute; bottom: 32px;
-  font-size: 11px; color: var(--dim); 
-  white-space: nowrap; opacity: 0.8;
-  letter-spacing: 0.05em;
+  font-size: 11px; color: var(--text); 
+  white-space: nowrap; opacity: 1;
+  letter-spacing: 0.06em;
+  font-weight: 700;
 }
 
 /*Sections*/
