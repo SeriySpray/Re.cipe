@@ -2,7 +2,30 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('RE.cipe: System startup...');
 
-  // 1. THEME SWITCHER
+  // 1. INITIAL STYLE READS (To avoid forced reflows)
+  var cachedAccent = null;
+  function getAccentColor() {
+    if (cachedAccent) return cachedAccent;
+    var style = getComputedStyle(document.body);
+    var color = style.getPropertyValue('--accent').trim();
+    if (color.startsWith('#')) {
+      var r = parseInt(color.slice(1, 3), 16);
+      var g = parseInt(color.slice(3, 5), 16);
+      var b = parseInt(color.slice(5, 7), 16);
+      cachedAccent = { r: r, g: g, b: b };
+    } else {
+      var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+      if (match) {
+        cachedAccent = { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
+      } else {
+        cachedAccent = { r: 0, g: 255, b: 136 };
+      }
+    }
+    return cachedAccent;
+  }
+  var baseColor = getAccentColor();
+
+  // 2. THEME SWITCHER
   var themeRadios = document.querySelectorAll('.theme-radio');
   
   themeRadios.forEach(function (radio) {
@@ -14,21 +37,22 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.setAttribute('data-theme', theme);
       }
       localStorage.setItem('recipe-theme', theme);
+      cachedAccent = null; // Invalidate cache
+      baseColor = getAccentColor();
       console.log('Theme changed to:', theme);
     });
   });
 
-  // Restore saved theme
+  // Sync theme radio based on current theme (already set in index.html)
   (function () {
-    var saved = localStorage.getItem('recipe-theme');
-    if (saved && saved !== 'green') {
-      document.body.setAttribute('data-theme', saved);
-      var radio = document.getElementById('t-' + saved);
+    var currentTheme = localStorage.getItem('recipe-theme');
+    if (currentTheme && currentTheme !== 'green') {
+      var radio = document.getElementById('t-' + currentTheme);
       if (radio) radio.checked = true;
     }
   })();
 
-  // 2. TYPING ANIMATION
+  // 3. TYPING ANIMATION
   function typeText(element, text, speed, onDone) {
     if (!element) return;
     var index = 0;
@@ -52,16 +76,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (eyebrow) {
     var originalText = eyebrow.textContent || '// terminal-style recipe management';
-    typeText(eyebrow, originalText, 35, function () {
-      if (heroSub) {
-        heroSub.style.transition = 'opacity 0.5s';
-        heroSub.style.opacity = '1';
-      }
-      if (heroCta) {
-        heroCta.style.transition = 'opacity 3s 0.2s';
-        heroCta.style.opacity = '1';
-      }
-    });
+    setTimeout(function() {
+      typeText(eyebrow, originalText, 35, function () {
+        if (heroSub) {
+          heroSub.style.transition = 'opacity 0.5s';
+          heroSub.style.opacity = '1';
+        }
+        if (heroCta) {
+          heroCta.style.transition = 'opacity 3s 0.2s';
+          heroCta.style.opacity = '1';
+        }
+      });
+    }, 150);
   }
 
   // 4. SCROLL-REVEAL
@@ -165,37 +191,40 @@ document.addEventListener('DOMContentLoaded', function() {
   }, { rootMargin: '-40% 0px -50% 0px' });
   sections.forEach(function (sec) { sectionObserver.observe(sec); });
 
-  // 7. INTERACTIVE GRID CANVAS (Moved inside DOMContentLoaded)
+  // 7. INTERACTIVE GRID CANVAS
   (function() {
     var canvas = document.getElementById('gridCanvas');
-    if (!canvas) {
-      console.log('Grid canvas not found, skipping background animation.');
-      return;
-    }
-    console.log('Initializing interactive grid...');
+    if (!canvas) return;
+    
     var ctx = canvas.getContext('2d');
     var mouse = { x: -1000, y: -1000 };
     var scrollY = window.pageYOffset;
+    var needsRedraw = true;
+    var parallaxItems = document.querySelectorAll('[data-speed]');
     
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      needsRedraw = true;
     }
     
     window.addEventListener('resize', resize);
     window.addEventListener('mousemove', function(e) {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
+      needsRedraw = true;
     });
+    
     window.addEventListener('scroll', function() {
       scrollY = window.pageYOffset;
-      var parallaxItems = document.querySelectorAll('[data-speed]');
-      parallaxItems.forEach(function (item) {
+      needsRedraw = true;
+      // Parallax update
+      for (var i = 0; i < parallaxItems.length; i++) {
+        var item = parallaxItems[i];
         var speed = parseFloat(item.getAttribute('data-speed'));
-        var yPos = -(scrollY * speed);
-        item.style.transform = 'translateY(' + yPos + 'px)';
-      });
-    });
+        item.style.transform = 'translateY(' + (-(scrollY * speed)) + 'px)';
+      }
+    }, { passive: true });
     
     resize();
 
@@ -203,60 +232,50 @@ document.addEventListener('DOMContentLoaded', function() {
     var avoidanceRadius = 45;
     var glowRadius = 110;
     
-    function getAccentColor() {
-      var style = getComputedStyle(document.body);
-      var color = style.getPropertyValue('--accent').trim();
-      if (color.startsWith('#')) {
-        var r = parseInt(color.slice(1, 3), 16);
-        var g = parseInt(color.slice(3, 5), 16);
-        var b = parseInt(color.slice(5, 7), 16);
-        return { r: r, g: g, b: b };
-      }
-      var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-      if (match) {
-        return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
-      }
-      return { r: 0, g: 255, b: 136 };
-    }
-
-    var baseColor = getAccentColor();
     var themeObserver = new MutationObserver(function() { 
+      cachedAccent = null;
       baseColor = getAccentColor();
+      needsRedraw = true;
     });
     themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
 
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      var offsetY = -(scrollY * 0.1) % dotGap;
-      for (var x = 0; x < canvas.width + dotGap; x += dotGap) {
-        for (var y = 0; y < canvas.height + dotGap; y += dotGap) {
-          var dotX = x;
-          var dotY = y + offsetY;
-          var dx = dotX - mouse.x;
-          var dy = dotY - mouse.y;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          var drawX = dotX;
-          var drawY = dotY;
-          var opacity = 0.15;
-          var radius = 1.4;
-          if (dist < avoidanceRadius) {
-            var force = (avoidanceRadius - dist) / avoidanceRadius;
-            drawX += (dx / dist) * force * 12; 
-            drawY += (dy / dist) * force * 12;
+      if (needsRedraw) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var offsetY = -(scrollY * 0.1) % dotGap;
+        for (var x = 0; x < canvas.width + dotGap; x += dotGap) {
+          for (var y = 0; y < canvas.height + dotGap; y += dotGap) {
+            var dotX = x;
+            var dotY = y + offsetY;
+            var dx = dotX - mouse.x;
+            var dy = dotY - mouse.y;
+            var distSq = dx * dx + dy * dy;
+            var drawX = dotX;
+            var drawY = dotY;
+            var opacity = 0.15;
+            var radius = 1.4;
+
+            if (distSq < glowRadius * glowRadius) {
+              var dist = Math.sqrt(distSq);
+              if (dist < avoidanceRadius) {
+                var force = (avoidanceRadius - dist) / avoidanceRadius;
+                drawX += (dx / dist) * force * 12; 
+                drawY += (dy / dist) * force * 12;
+              }
+              var glow = (glowRadius - dist) / glowRadius;
+              opacity += Math.pow(glow, 1.5) * 0.85; 
+              radius += glow * 1.3;
+            }
+            ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+            ctx.fill();
           }
-          if (dist < glowRadius) {
-            var glow = (glowRadius - dist) / glowRadius;
-            opacity += Math.pow(glow, 1.5) * 0.85; 
-            radius += glow * 1.3;
-          }
-          ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
-          ctx.beginPath();
-          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
-          ctx.fill();
         }
+        needsRedraw = false;
       }
       requestAnimationFrame(animate);
     }
-    animate();
+    requestAnimationFrame(animate);
   })();
 });

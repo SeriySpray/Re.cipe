@@ -7,7 +7,8 @@
   <meta name="description" content="Login or create your RE.cipe account." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="auth-page">
@@ -199,9 +200,9 @@
     applyHash();
     window.addEventListener('hashchange', applyHash);
   </script>
-  <script src="api.js"></script>
-  <script src="auth.js"></script>
-  <script src="main.js"></script>
+  <script src="api.js" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="main.js" defer></script>
 </body>
 </html>
 

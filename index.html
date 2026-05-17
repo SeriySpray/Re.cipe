@@ -4,10 +4,641 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RE.cipe — Your Recipes, Your Terminal</title>
+  <meta name="description" content="RE.cipe — A terminal-style recipe manager. Organize, filter, and plan your meals with a clean, developer-friendly interface." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <style>
+/*Tokens*/
+:root {
+  --bg:       #0d0d0d;
+  --surface:  #141414;
+  --border:   #262626;
+  --accent:   #00ff88;
+  --text:     #e0e0e0;
+  --muted:    #949494;
+  --dim:      #888;
+  --font:     'JetBrains Mono', monospace;
+  --radius:   4px;
+}
+[data-theme="amber"] { --accent: #ffb300; }
+[data-theme="cyan"]  { --accent: #00d4ff; }
+[data-theme="rose"]  { --accent: #ff4d6d; }
+[data-theme="violet"]{ --accent: #a855f7; }
+
+/*Reset*/
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+}
+#gridCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+a { color: var(--dim); text-decoration: none; }
+a:not(.btn):hover { color: var(--accent); }
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+
+/*Navbar*/
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; align-items: center; gap: 32px;
+  padding: 0 40px; height: 52px;
+  background: rgba(13,13,13,0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+}
+.logo { font-size: 15px; font-weight: 700; color: var(--accent); }
+.nav-links { display: flex; gap: 32px; }
+.nav-links a { font-size: 12px; }
+.nav-actions { display: flex; gap: 12px; margin-left: auto; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; font-family: var(--font); font-size: 12px;
+  border-radius: var(--radius);
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+}
+.btn-ghost { color: var(--dim); border: 1px solid var(--border); background: transparent; }
+.btn-ghost:hover { color: var(--accent); border-color: var(--accent); background: transparent; }
+.btn-primary { color: var(--bg); background: var(--accent); border: 1px solid var(--accent); font-weight: 700; }
+.btn-primary:hover { color: var(--bg); background: color-mix(in srgb, var(--accent) 80%, #000); border-color: color-mix(in srgb, var(--accent) 80%, #000); }
+.btn.large { padding: 10px 22px; font-size: 13px; }
+
+/*Hero*/
+.hero {
+  min-height: 100dvh; /*at least full screen tall*/
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; /* center vertically */
+  text-align: center; padding: 80px 24px 48px;
+  position: relative;
+}
+.eyebrow { font-size: 11px; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 20px; min-height: 16px; }
+.hero-title {
+  font-size: clamp(56px, 12vw, 120px); /*vw-viewport width %*/
+  font-weight: 700; line-height: 1; margin-bottom: 20px;
+  position: relative; display: inline-block;
+}
+.hero-title .accent { color: var(--accent); }
+.cursor {
+  position: absolute; left: 100%; bottom: 0.14em;
+  display: inline-block /*text+element behaivor*/; width: 0.5em; height: 0.08em;
+  background: var(--accent); margin-left: 6px;
+  animation: blink 1s step-end infinite;
+}
+.hero-sub { font-size: 15px; color: var(--dim); max-width: 420px; margin-bottom: 36px; opacity: 0; }
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap/*auto next line*/; justify-content: center; opacity: 0; }
+.scroll-hint {
+  position: absolute; bottom: 32px;
+  font-size: 11px; color: var(--text); 
+  white-space: nowrap; opacity: 1;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+/*Sections*/
+.section { max-width: 1000px; margin: 0 auto; padding: 72px 24px; }
+.label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.divider { border: none; border-top: 1px solid var(--border); }
+.muted { color: var(--dim); font-size: 13px; }
+
+/*Terminal*/
+.terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.term-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 14px; background: #111; border-bottom: 1px solid var(--border);
+}
+.dot { width: 10px; height: 10px; border-radius: 100%; }
+.dot.red    { background: #ff5f57; }
+.dot.yellow { background: #febc2e; }
+.dot.green  { background: #28c840; }
+.term-title { flex: 1; text-align: center; font-size: 11px; color: var(--muted); }
+.term-body { padding: 16px 20px; font-size: 12px; line-height: 1.9/*compared to text size*/; min-height: 120px; }
+#termDemo  { height: 374px; overflow: hidden; }
+/* terminal line colours */
+.t-cmd  { color: var(--accent); }
+.t-acc  { color: var(--accent); }
+.t-dim  { color: var(--dim); }
+.t-text { color: var(--text); }
+.acc    { color: var(--accent); }
+.term-cursor {
+  display: inline-block; width: 0.5em; height: 0.08em;
+  background: var(--accent); margin-left: 3px;
+  animation: blink 1s step-end infinite;
+}
+
+.term-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 14px; background: #111; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--muted);
+}
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/*Cards*/
+.cards { display: grid; grid-template-columns: repeat(3, 1fr/*1/3 of display width*/); gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--accent); }
+.card-icon { font-size: 20px; margin-bottom: 12px; }
+.card-tag { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.card p { font-size: 12px; color: var(--dim); margin-bottom: 12px; }
+.preview {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 12px;
+  font-size: 11px; color: var(--dim); white-space: pre; line-height: 1.8;
+  overflow-x: auto/*if overflow scroll*/;
+}
+.accent { color: var(--accent); }
+
+/*Theme switcher*/
+.theme-radio { display: none; }
+.theme-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.switch {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border: 1px solid var(--border);
+  border-radius: var(--radius); font-size: 12px; color: var(--dim);
+  background: var(--surface); cursor: pointer; transition: all 0.15s;
+}
+.switch:hover { border-color: var(--accent); color: var(--text); }
+.switch-dot { width: 10px; height: 10px; border-radius: 100%; }
+
+/*active switch when radio checked*/
+#t-green:checked  ~ .theme-row label[for="t-green"],
+#t-amber:checked  ~ .theme-row label[for="t-amber"],
+#t-cyan:checked   ~ .theme-row label[for="t-cyan"],
+#t-rose:checked   ~ .theme-row label[for="t-rose"],
+#t-violet:checked ~ .theme-row label[for="t-violet"] {
+  border-color: var(--switch-color, #00ff88);
+  color: var(--text);
+  background: var(--bg);
+}
+label[data-theme="green"]  { --switch-color: #00ff88; }
+label[data-theme="amber"]  { --switch-color: #ffb300; }
+label[data-theme="cyan"]   { --switch-color: #00d4ff; }
+label[data-theme="rose"]   { --switch-color: #ff4d6d; }
+label[data-theme="violet"] { --switch-color: #a855f7; }
+
+/*theme terminal accent colour*/
+.theme-display { display: none; color: var(--accent); }
+
+#t-green:checked  ~ .theme-terminal .theme-name-green,
+#t-amber:checked  ~ .theme-terminal .theme-name-amber,
+#t-cyan:checked   ~ .theme-terminal .theme-name-cyan,
+#t-rose:checked   ~ .theme-terminal .theme-name-rose,
+#t-violet:checked ~ .theme-terminal .theme-name-violet { display: inline; }
+
+/*theme colour overrides with sibling selectors*/
+#t-amber:checked  ~ .theme-terminal { --accent: #ffb300; }
+#t-cyan:checked   ~ .theme-terminal { --accent: #00d4ff; }
+#t-rose:checked   ~ .theme-terminal { --accent: #ff4d6d; }
+#t-violet:checked ~ .theme-terminal { --accent: #a855f7; }
+
+.theme-terminal { max-width: 450px; margin-top: 20px; }
+
+/*Steps*/
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.step {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: border-color 0.2s;
+}
+.step:hover { border-color: var(--accent); }
+.step-num {
+  width: 34px; height: 34px; border: 1px solid var(--accent);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 12px;
+}
+.step-cmd { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.step p { font-size: 12px; color: var(--dim); }
+
+/*ASCII Art*/
+.ascii-art {
+  font-family: var(--font);
+  font-size: clamp(6px, 1.2vw, 11px);
+  line-height: 1.3;
+  color: var(--border);
+  white-space: pre;
+  margin-bottom: 32px;
+  user-select: none;
+  letter-spacing: 0;
+}
+
+/*CTA*/
+.cta-section {
+  padding: 72px 24px; text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.cta-section .muted { margin: 8px 0 24px; }
+/*Footer*/
+.footer {
+  display: flex; align-items: center; gap: 32px;
+  padding: 24px 40px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--muted);
+}
+.footer-links { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.footer .muted:last-child { margin-left: auto; }
+
+
+/*Auth Page*/
+.auth-page { display: flex; flex-direction: column; min-height: 100dvh; }
+
+.auth-main {
+  position: relative; z-index: 10;
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 88px 24px 48px;
+}
+
+.auth-main .eyebrow { margin-bottom: 24px; }
+
+.auth-wrap { width: 100%; max-width: 440px; }
+
+/* hide radio inputs */
+.auth-radio { display: none; }
+
+.auth-terminal { width: 100%; }
+
+/* ── Auth Tabs ── */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: #111;
+}
+
+.auth-tab {
+  flex: 1; text-align: center;
+  padding: 10px 16px;
+  font-family: var(--font); font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.auth-tab:hover { color: var(--text); }
+
+/*active tab when radio is checked*/
+#tab-login:checked    ~ .terminal .auth-tabs label[for="tab-login"],
+#tab-register:checked ~ .terminal .auth-tabs label[for="tab-register"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/*Auth Panels*/
+.auth-panel { display: none; }
+
+#tab-login:checked    ~ .terminal .login-panel,
+#tab-register:checked ~ .terminal .register-panel { display: block; }
+
+/*Auth Form Body*/
+.auth-body { padding: 24px 24px 20px; }
+
+.auth-comment { font-size: 11px; margin-bottom: 20px; }
+
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-label {
+  font-size: 11px; color: var(--dim); letter-spacing: 0.05em;
+}
+.form-label .t-acc { margin-right: 4px; }
+
+.form-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  font-family: var(--font); font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.form-input::placeholder { color: var(--muted); }
+.form-input:focus { border-color: var(--accent); }
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus,
+.form-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 100px var(--bg) inset;
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+  border-color: var(--accent);
+  transition: background-color 0s 5000s;
+}
+
+.auth-btn { width: 100%; justify-content: center; margin-top: 4px; padding: 10px; font-size: 13px; }
+
+/*Switch link*/
+.auth-switch {
+  margin-top: 16px;
+  font-size: 11px; color: var(--dim); text-align: center;
+}
+.auth-switch-link {
+  color: var(--accent); cursor: pointer; margin-left: 4px;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.auth-switch-link:hover { opacity: 0.8; }
+
+/*Status bar messages*/
+.auth-status-login,
+.auth-status-register { display: none; }
+
+#tab-login:checked    ~ .terminal .term-status .auth-status-login    { display: inline; }
+#tab-register:checked ~ .terminal .term-status .auth-status-register { display: inline; }
+
+/*Animations*/
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* ── JS: Active nav link ── */
+.nav-links a.nav-link--active {
+  color: var(--accent);
+}
+
+/* ── JS: Scroll-reveal ── */
+[data-reveal] {
+  transition: opacity 1.5s ease, transform 2s ease;
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/*Responsive*/
+@media (max-width: 768px) {
+  /*Tablets and smaller phones*/
+  .navbar { padding: 0 16px; }
+  .nav-links { display: none; }
+  .cards { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
+}
+@media (max-width: 480px) {
+  /*Small phones*/
+  .steps { grid-template-columns: 1fr; }
+  .hero-cta { flex-direction: column; align-items: center; }
+  .cta-form { flex-direction: column; }
+}
+
+/* ══════════════════════════════════════════
+   App Page
+═══════════════════════════════════════════ */
+
+.app-page {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.app-page::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, #ffffff05 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Navbar additions */
+.nav-sep  { font-size: 11px; color: var(--muted); }
+.nav-user { font-size: 11px; color: var(--dim); }
+
+.theme-swatches { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.swatch {
+  font-family: inherit; font-size: 10px; color: var(--dim);
+  background: none; border: none; cursor: pointer; padding: 1px 3px;
+  transition: color 0.15s;
+}
+.swatch:hover { color: var(--fg); }
+.swatch.on    { color: var(--accent); }
+
+/* Workspace */
+.workspace {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 10px;
+  padding: 62px 10px 10px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Panel chrome */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  position: relative; z-index: 1;
+}
+
+.panel-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 14px; height: 36px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.3);
+}
+.panel-label { font-size: 10px; color: var(--muted); margin-left: 6px; letter-spacing: 0.04em; }
+
+.panel-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 14px; height: 26px;
+  border-top: 1px solid var(--border);
+  font-size: 9px; color: var(--muted);
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.25);
+  letter-spacing: 0.06em;
+}
+.panel-status-right { margin-left: auto; }
+
+.sdot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent);
+  animation: sdot-pulse 2.5s ease-in-out infinite;
+}
+@keyframes sdot-pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+/* Form */
+.form-scroll {
+  flex: 1; overflow-y: auto; padding: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.form-scroll::-webkit-scrollbar { width: 3px; }
+.form-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.form-comment { font-size: 9px; color: var(--dim); letter-spacing: 0.08em; }
+
+.field {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 13px;
+  transition: border-color 0.15s;
+  cursor: text;
+}
+.field.focused { border-color: var(--accent); }
+
+.f-label {
+  display: block;
+  font-size: 8px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.7px;
+  margin-bottom: 5px;
+  cursor: text;
+}
+
+.f-input {
+  display: block; width: 100%;
+  background: transparent; border: none; outline: none;
+  font-family: var(--font); font-size: 12px;
+  color: var(--text); caret-color: var(--accent);
+  resize: none;
+}
+.f-input::placeholder { color: #252525; }
+
+.f-textarea { min-height: 52px; line-height: 1.6; }
+
+.form-actions {
+  padding: 0 14px 12px;
+  display: flex; gap: 7px; flex-shrink: 0;
+}
+
+.btn-save {
+  flex: 1;
+  background: var(--accent); color: #000;
+  border: none; border-radius: 8px; padding: 10px;
+  font-family: var(--font); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-save:hover  { opacity: 0.85; }
+.btn-save:active { transform: scale(0.98); }
+
+.btn-clear {
+  background: transparent; color: var(--dim);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 16px;
+  font-family: var(--font); font-size: 10px;
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-clear:hover { color: var(--text); border-color: var(--dim); }
+
+/* Master-Detail */
+.md-body {
+  flex: 1; display: grid;
+  grid-template-columns: 180px 1fr;
+  overflow: hidden;
+}
+
+.r-list {
+  border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 8px 6px;
+  display: flex; flex-direction: column; gap: 2px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.r-list::-webkit-scrollbar { width: 3px; }
+.r-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.r-item {
+  border-radius: 6px; padding: 8px 10px;
+  cursor: pointer; border: 1px solid transparent;
+  transition: background 0.12s;
+}
+.r-item:hover  { background: rgba(255,255,255,0.03); }
+.r-item.active {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.r-item-top { display: flex; align-items: baseline; margin-bottom: 2px; }
+.r-prompt   { font-size: 9px; color: var(--dim); margin-right: 5px; flex-shrink: 0; }
+.r-name     { font-size: 11px; font-weight: 700; color: var(--text); }
+.r-time     { font-size: 9px; color: var(--muted); }
+
+.r-item.active .r-prompt,
+.r-item.active .r-name { color: var(--accent); }
+
+.r-detail {
+  padding: 16px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.r-detail::-webkit-scrollbar { width: 3px; }
+.r-detail::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.detail-head { padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.detail-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.02em; }
+.detail-meta { font-size: 10px; color: var(--dim); }
+
+.detail-block {
+  background: #111; border: 1px solid var(--border);
+  border-radius: 8px; padding: 11px 13px;
+}
+.detail-block .f-label { margin-bottom: 6px; }
+.detail-val { font-size: 11px; color: var(--dim); line-height: 1.7; }
+
+.detail-foot { margin-top: auto; display: flex; gap: 7px; }
+
+.btn-edit {
+  flex: 1; background: transparent; color: var(--dim);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px; font-family: var(--font); font-size: 10px;
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-edit:hover { color: var(--text); border-color: var(--dim); }
+
+.btn-del {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 14px; font-family: var(--font); font-size: 10px;
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-del:hover { color: #ff4d6d; border-color: rgba(255,77,109,0.3); }
+
+/* Empty state */
+.empty-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+}
+.empty-text { font-size: 11px; color: var(--border); letter-spacing: 0.06em; }
+.empty-sub  { font-size: 10px; color: var(--muted); }
+  </style>
+  <script src="main.js" defer></script>
 </head>
 <body>
   <canvas id="gridCanvas"></canvas>
@@ -33,163 +664,164 @@
     </div>
   </nav>
 
-  <!--HERO-->
-  <section class="hero">
-    <p class="eyebrow" id="heroEyebrow" data-speed="0.05">// terminal-style recipe management</p>
-    <h1 class="hero-title" data-speed="0.1">
-      <span class="hero-title-text"><span class="accent">RE.</span>CIPE</span><span class="cursor"></span>
-    </h1>
-    <p class="hero-sub" id="heroSub" data-speed="0.15">Your recipes. Your terminal. No clutter, no complexity.</p>
-    <div class="hero-cta" id="heroCta" data-speed="0.2">
-      <a href="auth.html#register" class="btn btn-primary large">&gt; get_started --free</a>
-    </div>
-    <p class="scroll-hint">&gt; scroll to explore</p>
-  </section>
-
-  <hr class="divider" />
-
-  <!--TERMINAL DEMO-->
-  <section class="section" id="demo" data-reveal>
-    <p class="label">live demo</p>
-    <h2>See it in action</h2>
-    <div class="terminal">
-      <div class="term-bar">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
-        <span class="term-title">re.cipe — v0.1</span>
+  <main>
+    <!--HERO-->
+    <section class="hero">
+      <p class="eyebrow" id="heroEyebrow" data-speed="0.05">// terminal-style recipe management</p>
+      <h1 class="hero-title" data-speed="0.1">
+        <span class="hero-title-text"><span class="accent">RE.</span>CIPE</span><span class="cursor"></span>
+      </h1>
+      <p class="hero-sub" id="heroSub" data-speed="0.15">Your recipes. Your terminal. No clutter, no complexity.</p>
+      <div class="hero-cta" id="heroCta" data-speed="0.2">
+        <a href="auth.html#register" class="btn btn-primary large">&gt; get_started --free</a>
       </div>
-      <div class="term-body" id="termDemo">
+      <p class="scroll-hint">&gt; scroll to explore</p>
+    </section>
+
+    <hr class="divider" />
+
+    <!--TERMINAL DEMO-->
+    <section class="section" id="demo" data-reveal>
+      <p class="label">live demo</p>
+      <h2>See it in action</h2>
+      <div class="terminal">
+        <div class="term-bar">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="term-title">re.cipe — v0.1</span>
+        </div>
+        <div class="term-body" id="termDemo">
+        </div>
+        <div class="term-status">
+          <span class="status-dot"></span>
+          <span id="termStatus">...</span>
+          <span style="margin-left:auto" id="termLines">0/15 lines</span>
+        </div>
       </div>
-      <div class="term-status">
-        <span class="status-dot"></span>
-        <span id="termStatus">...</span>
-        <span style="margin-left:auto" id="termLines">0/15 lines</span>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <hr class="divider" />
+    <hr class="divider" />
 
-  <!--FEATURES-->
-  <section class="section" id="features" data-reveal>
-    <p class="label">features</p>
-    <h2>Everything you need</h2>
-    <div class="cards">
+    <!--FEATURES-->
+    <section class="section" id="features" data-reveal>
+      <p class="label">features</p>
+      <h2>Everything you need</h2>
+      <div class="cards">
 
-      <div class="card">
-        <p class="card-tag">recipe management</p>
-        <h3>File-Tree Browser</h3>
-        <p>Organize recipes in nested folders. Collapse and expand like a real file explorer.</p>
-        <div class="preview">▼ /My Recipes/
+        <div class="card">
+          <p class="card-tag">recipe management</p>
+          <h3>File-Tree Browser</h3>
+          <p>Organize recipes in nested folders. Collapse and expand like a real file explorer.</p>
+          <div class="preview">▼ /My Recipes/
     ▼ /Pasta/
         <span class="t-cmd">- Carbonara   [25min **o]</span>
         <span class="t-cmd">- Lasagna     [90min ***]</span>
     ▷ /Soups/</div>
-      </div>
+        </div>
 
-      <div class="card">
-        <p class="card-tag">smart filtering</p>
-        <h3>Ingredient Filter</h3>
-        <p>Select ingredients and watch matching recipes highlight instantly.</p>
-        <div class="preview">▼ /Ingredients  [filter: on]
+        <div class="card">
+          <p class="card-tag">smart filtering</p>
+          <h3>Ingredient Filter</h3>
+          <p>Select ingredients and watch matching recipes highlight instantly.</p>
+          <div class="preview">▼ /Ingredients  [filter: on]
     <span class="t-cmd">[x] eggs    &lt;- 3 recipes</span>
     <span class="t-cmd">[x] bacon   &lt;- 1 recipe</span>
     [ ] chicken
     [ ] cream
 <span class="t-cmd">&gt; 4 matches found ✓</span></div>
-      </div>
+        </div>
 
-      <div class="card">
-        <p class="card-tag">meal planning</p>
-        <h3>Weekly Planner</h3>
-        <p>Assign recipes to days and meals. Auto-generate your shopping list, without any trouble.</p>
-        <div class="preview">▼ /Monday
+        <div class="card">
+          <p class="card-tag">meal planning</p>
+          <h3>Weekly Planner</h3>
+          <p>Assign recipes to days and meals. Auto-generate your shopping list, without any trouble.</p>
+          <div class="preview">▼ /Monday
     <span class="t-cmd">&gt; Breakfast: Oatmeal</span>
     <span class="t-cmd">&gt; Dinner:   Carbonara</span>
 ▷ /Tuesday  [0 meals]
 
 <span class="t-cmd">&gt; shop_list() -&gt; 12 items ✓</span></div>
-      </div>
-
-    </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!--THEME SWITCHER-->
-  <section class="section" id="themes" data-reveal>
-    <p class="label">personalization</p>
-    <h2>Make it yours</h2>
-    <p class="muted">Pick a colour scheme for your terminal:</p>
-
-    <div class="theme-picker">
-      <input type="radio" name="theme" id="t-green"  class="theme-radio" checked />
-      <input type="radio" name="theme" id="t-amber"  class="theme-radio" />
-      <input type="radio" name="theme" id="t-cyan"   class="theme-radio" />
-      <input type="radio" name="theme" id="t-rose"   class="theme-radio" />
-      <input type="radio" name="theme" id="t-violet" class="theme-radio" />
-
-      <div class="theme-row">
-        <label for="t-green"  class="switch" data-theme="green" ><span class="switch-dot" style="background:#00ff88"></span>green</label>
-        <label for="t-amber"  class="switch" data-theme="amber" ><span class="switch-dot" style="background:#ffb300"></span>amber</label>
-        <label for="t-cyan"   class="switch" data-theme="cyan"  ><span class="switch-dot" style="background:#00d4ff"></span>cyan</label>
-        <label for="t-rose"   class="switch" data-theme="rose"  ><span class="switch-dot" style="background:#ff4d6d"></span>rose</label>
-        <label for="t-violet" class="switch" data-theme="violet"><span class="switch-dot" style="background:#a855f7"></span>violet</label>
-      </div>
-
-      <div class="terminal theme-terminal">
-        <div class="term-bar">
-          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-          <span class="term-title">~/.recipe/config</span>
         </div>
-        <div class="term-body">
-          <div>colorScheme = <span class="theme-name-green  theme-display">"green"</span>
-                            <span class="theme-name-amber  theme-display">"amber"</span>
-                            <span class="theme-name-cyan   theme-display">"cyan"</span>
-                            <span class="theme-name-rose   theme-display">"rose"</span>
-                            <span class="theme-name-violet theme-display">"violet"</span>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!--THEME SWITCHER-->
+    <section class="section" id="themes" data-reveal>
+      <p class="label">personalization</p>
+      <h2>Make it yours</h2>
+      <p class="muted">Pick a colour scheme for your terminal:</p>
+
+      <div class="theme-picker">
+        <input type="radio" name="theme" id="t-green"  class="theme-radio" checked />
+        <input type="radio" name="theme" id="t-amber"  class="theme-radio" />
+        <input type="radio" name="theme" id="t-cyan"   class="theme-radio" />
+        <input type="radio" name="theme" id="t-rose"   class="theme-radio" />
+        <input type="radio" name="theme" id="t-violet" class="theme-radio" />
+
+        <div class="theme-row">
+          <label for="t-green"  class="switch" data-theme="green" ><span class="switch-dot" style="background:#00ff88"></span>green</label>
+          <label for="t-amber"  class="switch" data-theme="amber" ><span class="switch-dot" style="background:#ffb300"></span>amber</label>
+          <label for="t-cyan"   class="switch" data-theme="cyan"  ><span class="switch-dot" style="background:#00d4ff"></span>cyan</label>
+          <label for="t-rose"   class="switch" data-theme="rose"  ><span class="switch-dot" style="background:#ff4d6d"></span>rose</label>
+          <label for="t-violet" class="switch" data-theme="violet"><span class="switch-dot" style="background:#a855f7"></span>violet</label>
+        </div>
+
+        <div class="terminal theme-terminal">
+          <div class="term-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="term-title">~/.recipe/config</span>
           </div>
-          <div>username = <span class="acc">"chef_42"</span></div>
-          <div>ascii_art = <span class="t-dim">"ramen_bowl.txt"</span></div>
+          <div class="term-body">
+            <div>colorScheme = <span class="theme-name-green  theme-display">"green"</span>
+                              <span class="theme-name-amber  theme-display">"amber"</span>
+                              <span class="theme-name-cyan   theme-display">"cyan"</span>
+                              <span class="theme-name-rose   theme-display">"rose"</span>
+                              <span class="theme-name-violet theme-display">"violet"</span>
+            </div>
+            <div>username = <span class="acc">"chef_42"</span></div>
+            <div>ascii_art = <span class="t-dim">"ramen_bowl.txt"</span></div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <hr class="divider" />
+    <hr class="divider" />
 
-  <!--HOW IT WORKS-->
-  <section class="section" id="how" data-reveal>
-    <p class="label">workflow</p>
-    <h2>How it works</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <p class="step-cmd">register()</p>
-        <p>Create your account and pick a colour scheme.</p>
+    <!--HOW IT WORKS-->
+    <section class="section" id="how" data-reveal>
+      <p class="label">workflow</p>
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <p class="step-cmd">register()</p>
+          <p>Create your account and pick a colour scheme.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <p class="step-cmd">add_recipes()</p>
+          <p>Add recipes with ingredients, steps, and cook time.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <p class="step-cmd">plan_week()</p>
+          <p>Assign recipes to each day and meal slot.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <p class="step-cmd">shop_list()</p>
+          <p>Auto-generate a shopping list from your week plan.</p>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <p class="step-cmd">add_recipes()</p>
-        <p>Add recipes with ingredients, steps, and cook time.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <p class="step-cmd">plan_week()</p>
-        <p>Assign recipes to each day and meal slot.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <p class="step-cmd">shop_list()</p>
-        <p>Auto-generate a shopping list from your week plan.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!--СTA-->
-  <section class="cta-section" data-reveal>
-    <pre class="ascii-art">
+    <!--СTA-->
+    <section class="cta-section" data-reveal>
+      <pre class="ascii-art">
 ██████╗ ███████╗
 ██╔══██╗██╔════╝
 ██████╔╝█████╗  
@@ -197,11 +829,12 @@
 ██║  ██║███████╗
 ╚═╝  ╚═╝╚══════╝
            .cipe</pre>
-    <p class="label">ready?</p>
-    <h2>&gt; init_account()</h2>
-    <p class="muted">Free forever. No credit card. Just your recipes.</p>
-    <a href="auth.html#register" class="btn btn-primary large">&gt; create_account()</a>
-  </section>
+      <p class="label">ready?</p>
+      <h2>&gt; init_account()</h2>
+      <p class="muted">Free forever. No credit card. Just your recipes.</p>
+      <a href="auth.html#register" class="btn btn-primary large">&gt; create_account()</a>
+    </section>
+  </main>
 
   <!--FOOTER-->
   <footer class="footer">
@@ -209,6 +842,5 @@
     <span class="muted">v0.1</span>
   </footer>
 
-  <script src="main.js"></script>
 </body>
 </html>

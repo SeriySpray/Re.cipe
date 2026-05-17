@@ -7,7 +7,7 @@
   --border:   #262626;
   --accent:   #00ff88;
   --text:     #e0e0e0;
-  --muted:    #555;
+  --muted:    #949494;
   --dim:      #888;
   --font:     'JetBrains Mono', monospace;
   --radius:   4px;
@@ -78,7 +78,7 @@ h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
   text-align: center; padding: 80px 24px 48px;
   position: relative;
 }
-.eyebrow { font-size: 11px; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 20px; }
+.eyebrow { font-size: 11px; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 20px; min-height: 16px; }
 .hero-title {
   font-size: clamp(56px, 12vw, 120px); /*vw-viewport width %*/
   font-weight: 700; line-height: 1; margin-bottom: 20px;
