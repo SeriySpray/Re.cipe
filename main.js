@@ -1,9 +1,6 @@
 //THEME SWITCHER: зміна кольору всього сайту
 var themeRadios = document.querySelectorAll('.theme-radio');
 
-const button = document.getElementsByClassName("btn.btn-primary.large");
-button.style.
-
 themeRadios.forEach(function (radio) {
   radio.addEventListener('change', function () {
     // Беремо назву теми з id кнопки: "t-green" >> "green"
