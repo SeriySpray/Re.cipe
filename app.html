@@ -24,16 +24,22 @@
     <span class="nav-sep">/</span>
     <span class="nav-user" id="navUser">// guest</span>
     <div class="theme-swatches">
-      <button class="swatch" data-theme-name="green">[grn]</button>
-      <button class="swatch" data-theme-name="amber">[amb]</button>
-      <button class="swatch" data-theme-name="cyan">[cyn]</button>
-      <button class="swatch" data-theme-name="rose">[ros]</button>
-      <button class="swatch" data-theme-name="violet">[vlt]</button>
+      <button class="swatch s-green" data-theme-name="green" title="green"></button>
+      <button class="swatch s-amber" data-theme-name="amber" title="amber"></button>
+      <button class="swatch s-cyan"  data-theme-name="cyan"  title="cyan"></button>
+      <button class="swatch s-rose"  data-theme-name="rose"  title="rose"></button>
+      <button class="swatch s-violet" data-theme-name="violet" title="violet"></button>
     </div>
     <button class="btn btn-ghost" id="btnLogout">&gt; logout</button>
   </nav>
 
   <div class="workspace">
+
+    <!-- MOBILE PANEL SWITCHER -->
+    <div class="workspace-tabs">
+      <button class="w-tab active" data-target="formPanel">new_recipe</button>
+      <button class="w-tab" data-target="recipesPanel">browse_recipes</button>
+    </div>
 
     <!-- LEFT: ADD / EDIT RECIPE -->
     <div class="panel" id="formPanel">

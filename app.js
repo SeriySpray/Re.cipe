@@ -302,6 +302,7 @@ function handleEdit(idx) {
   setFormValues(r);
   state.editIdx = idx;
   setFormMode('edit');
+  switchToFormTab();
   document.getElementById('fName').focus();
 }
 
@@ -319,6 +320,44 @@ async function handleDelete(idx) {
   }
 }
 
+// ── Mobile Tabs ───────────────────────────────────────────────────
+
+function initTabs() {
+  var ws = document.querySelector('.workspace');
+  if (!ws) return;
+
+  // Default mode for mobile
+  ws.classList.add('show-form');
+
+  document.querySelectorAll('.w-tab').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = btn.dataset.target;
+      document.querySelectorAll('.w-tab').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+
+      if (target === 'formPanel') {
+        ws.classList.remove('show-recipes');
+        ws.classList.add('show-form');
+      } else {
+        ws.classList.remove('show-form');
+        ws.classList.add('show-recipes');
+      }
+    });
+  });
+}
+
+function switchToFormTab() {
+  var ws = document.querySelector('.workspace');
+  if (!ws || window.innerWidth > 700) return;
+
+  ws.classList.remove('show-recipes');
+  ws.classList.add('show-form');
+
+  document.querySelectorAll('.w-tab').forEach(function (btn) {
+    btn.classList.toggle('active', btn.dataset.target === 'formPanel');
+  });
+}
+
 // ── Init ──────────────────────────────────────────────────────────
 
 (async function init() {
@@ -330,5 +369,6 @@ async function handleDelete(idx) {
   initTheme();
   initAuth();
   initForm();
+  initTabs();
   await reloadRecipes();
 }());
