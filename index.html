@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <canvas id="gridCanvas"></canvas>
   <script>
     (function () {
       var s = localStorage.getItem('recipe-theme');
@@ -34,12 +35,12 @@
 
   <!--HERO-->
   <section class="hero">
-    <p class="eyebrow" id="heroEyebrow">// terminal-style recipe management</p>
-    <h1 class="hero-title">
+    <p class="eyebrow" id="heroEyebrow" data-speed="0.05">// terminal-style recipe management</p>
+    <h1 class="hero-title" data-speed="0.1">
       <span class="hero-title-text"><span class="accent">RE.</span>CIPE</span><span class="cursor"></span>
     </h1>
-    <p class="hero-sub" id="heroSub">Your recipes. Your terminal. No clutter, no complexity.</p>
-    <div class="hero-cta" id="heroCta">
+    <p class="hero-sub" id="heroSub" data-speed="0.15">Your recipes. Your terminal. No clutter, no complexity.</p>
+    <div class="hero-cta" id="heroCta" data-speed="0.2">
       <a href="auth.html#register" class="btn btn-primary large">&gt; get_started --free</a>
     </div>
     <p class="scroll-hint">&gt; scroll to explore</p>

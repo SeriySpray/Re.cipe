@@ -1,6 +1,9 @@
 //THEME SWITCHER: зміна кольору всього сайту
 var themeRadios = document.querySelectorAll('.theme-radio');
 
+const button = document.getElementsByClassName("btn.btn-primary.large");
+button.style.
+
 themeRadios.forEach(function (radio) {
   radio.addEventListener('change', function () {
     // Беремо назву теми з id кнопки: "t-green" >> "green"
@@ -160,3 +163,108 @@ var sectionObserver = new IntersectionObserver(function (entries) {
 }, { rootMargin: '-40% 0px -50% 0px' });
 
 sections.forEach(function (sec) { sectionObserver.observe(sec); });
+
+// ─── 7. INTERACTIVE GRID CANVAS ──────────────────────────────
+(function() {
+  var canvas = document.getElementById('gridCanvas');
+  var ctx = canvas.getContext('2d');
+  var mouse = { x: -1000, y: -1000 };
+  var scrollY = window.pageYOffset;
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', function(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+  window.addEventListener('scroll', function() {
+    scrollY = window.pageYOffset;
+    
+    // Рух окремих елементів з атрибутом data-speed (залишаємо як було)
+    var parallaxItems = document.querySelectorAll('[data-speed]');
+    parallaxItems.forEach(function (item) {
+      var speed = parseFloat(item.getAttribute('data-speed'));
+      var yPos = -(scrollY * speed);
+      item.style.transform = 'translateY(' + yPos + 'px)';
+    });
+  });
+  
+  resize();
+
+  var dotGap = 32;
+  var avoidanceRadius = 45; // Ще менший радіус деформації
+  var glowRadius = 110;     // Ще менший радіус підсвітки
+  
+  // Функція для отримання поточного кольору теми
+  function getAccentColor() {
+    var style = getComputedStyle(document.body);
+    var hex = style.getPropertyValue('--accent').trim();
+    
+    // Перетворюємо HEX у RGB для Canvas
+    if (hex.startsWith('#')) {
+      var r = parseInt(hex.slice(1, 3), 16);
+      var g = parseInt(hex.slice(3, 5), 16);
+      var b = parseInt(hex.slice(5, 7), 16);
+      return { r: r, g: g, b: b };
+    }
+    return { r: 0, g: 255, b: 136 }; // fallback
+  }
+
+  var baseColor = getAccentColor();
+
+  // Оновлюємо колір при зміні теми (спостерігач за атрибутами)
+  var themeObserver = new MutationObserver(function() {
+    baseColor = getAccentColor();
+  });
+  themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    var offsetX = 0;
+    var offsetY = -(scrollY * 0.1) % dotGap;
+    
+    // Малюємо сітку
+    for (var x = 0; x < canvas.width + dotGap; x += dotGap) {
+      for (var y = 0; y < canvas.height + dotGap; y += dotGap) {
+        var dotX = x + offsetX;
+        var dotY = y + offsetY;
+        
+        var dx = dotX - mouse.x;
+        var dy = dotY - mouse.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        
+        var drawX = dotX;
+        var drawY = dotY;
+        var opacity = 0.12; 
+        var radius = 1.3;
+        
+        if (dist < avoidanceRadius) {
+          var force = (avoidanceRadius - dist) / avoidanceRadius;
+          drawX += (dx / dist) * force * 12; 
+          drawY += (dy / dist) * force * 12;
+        }
+
+        if (dist < glowRadius) {
+          var glow = (glowRadius - dist) / glowRadius;
+          // Посилюємо яскравість та розмір для ефекту світіння
+          opacity += Math.pow(glow, 1.5) * 0.88; 
+          radius += glow * 1.2; // Точки збільшуються при наближенні курсору
+        }
+        
+        ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
+        ctx.beginPath();
+        ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+})();
