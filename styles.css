@@ -727,7 +727,7 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
   .navbar { padding: 0 12px; gap: 8px; }
   .nav-sep, .nav-user { display: none; }
   .theme-swatches { display: flex; margin-left: auto; gap: 6px; }
-  .nav-actions { margin-left: 0; }
+  .nav-actions { margin-left: auto; }
   
   .hero-title { font-size: clamp(36px, 14vw, 70px); }
 }
