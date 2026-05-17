@@ -12,8 +12,12 @@ const allowedOrigins = [
 app.use(cors({
   origin: function (origin, callback) {
     console.log('[cors] Request from origin:', origin);
-    // Allow any origin for debugging, or narrow it down
-    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('seriyspray.github.io')) {
+    // Allow any origin for local network access and development
+    if (!origin || 
+        origin.includes('localhost') || 
+        origin.includes('127.0.0.1') || 
+        origin.includes('192.168.') || 
+        origin.includes('seriyspray.github.io')) {
       return callback(null, true);
     }
     callback(new Error('Not allowed by CORS'));
@@ -32,6 +36,8 @@ app.use('/api/ingredients', require('./routes/ingredients'));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running!`);
+  console.log(`- Local:    http://localhost:${PORT}`);
+  console.log(`- Network:  http://192.168.31.100:${PORT}`);
 });

@@ -1,4 +1,11 @@
-var API = 'http://localhost:3000';
+// Replace this with your actual server IP (from ipconfig / ifconfig)
+// Example: 'http://192.168.31.100:3000'
+var API_HOST = 'http://192.168.31.100:3000';
+
+// Use localhost if we are on the same machine, otherwise use the network IP
+var API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : API_HOST;
 
 async function apiFetch(path, options) {
   options = options || {};
