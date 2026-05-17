@@ -1,11 +1,22 @@
-// Replace this with your actual server IP (from ipconfig / ifconfig)
-// Example: 'http://192.168.31.100:3000'
-var API_HOST = 'http://192.168.31.100:3000';
+(function() {
+  // ── API Configuration ───────────────────────────────────────────
+  // This script detects the correct backend URL based on how you access the frontend.
 
-// Use localhost if we are on the same machine, otherwise use the network IP
-window.API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000'
-  : API_HOST;
+  var host = window.location.hostname;
+  
+  // 1. Detect if we are running locally on the server machine
+  var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '';
+
+  // 2. Determine the backend IP
+  // If we access the frontend via an IP (e.g. 192.168.31.100), use that same IP for the backend.
+  // Otherwise, fallback to the known server IP.
+  var backendIP = isLocal ? 'localhost' : (host.match(/^\d+\.\d+\.\d+\.\d+$/) ? host : '192.168.31.100');
+
+  window.API = 'http://' + backendIP + ':3000';
+
+  console.log('[api] Frontend Host:', host || 'local_file');
+  console.log('[api] Backend Target:', window.API);
+})();
 
 window.apiFetch = async function(path, options) {
   options = options || {};
@@ -16,8 +27,10 @@ window.apiFetch = async function(path, options) {
 
   var res;
   try {
-    res = await fetch(API + path, Object.assign({}, options, { headers: headers }));
+    console.log('[api] Fetching:', window.API + path);
+    res = await fetch(window.API + path, Object.assign({}, options, { headers: headers }));
   } catch (e) {
+    console.error('[api] Fetch error:', e);
     throw new Error('server_unavailable');
   }
 
@@ -29,4 +42,4 @@ window.apiFetch = async function(path, options) {
   }
 
   return res;
-}
+};

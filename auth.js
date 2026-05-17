@@ -26,12 +26,12 @@ loginForm.addEventListener('submit', async function (e) {
   setAuthStatus('login', 'CONNECTING...');
 
   try {
-    console.log('[auth] Login attempt to:', window.API + '/api/auth/login');
-    var res  = await fetch(window.API + '/api/auth/login', {
+    var res  = await window.apiFetch('/api/auth/login', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ email: email, password: password })
     });
+    
+    if (!res) return; // Handled by apiFetch (e.g. 401)
     var data = await res.json();
 
     if (!res.ok) {
@@ -72,12 +72,12 @@ registerForm.addEventListener('submit', async function (e) {
   setAuthStatus('register', 'CONNECTING...');
 
   try {
-    console.log('[auth] Register attempt to:', window.API + '/api/auth/register');
-    var res  = await fetch(window.API + '/api/auth/register', {
+    var res  = await window.apiFetch('/api/auth/register', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ email: email, password: password, display_name: username })
     });
+
+    if (!res) return;
     var data = await res.json();
 
     if (!res.ok) {
