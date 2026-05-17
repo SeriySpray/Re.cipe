@@ -165,114 +165,98 @@ document.addEventListener('DOMContentLoaded', function() {
   }, { rootMargin: '-40% 0px -50% 0px' });
   sections.forEach(function (sec) { sectionObserver.observe(sec); });
 
-});
-
-// 7. INTERACTIVE GRID CANVAS
-(function() {
-  var canvas = document.getElementById('gridCanvas');
-  if (!canvas) {
-    console.log('Grid canvas not found, skipping background animation.');
-    return;
-  }
-  console.log('Initializing interactive grid...');
-  var ctx = canvas.getContext('2d');
-  var mouse = { x: -1000, y: -1000 };
-  var scrollY = window.pageYOffset;
-  
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  
-  window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', function(e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-  window.addEventListener('scroll', function() {
-    scrollY = window.pageYOffset;
-    var parallaxItems = document.querySelectorAll('[data-speed]');
-    parallaxItems.forEach(function (item) {
-      var speed = parseFloat(item.getAttribute('data-speed'));
-      var yPos = -(scrollY * speed);
-      item.style.transform = 'translateY(' + yPos + 'px)';
+  // 7. INTERACTIVE GRID CANVAS (Moved inside DOMContentLoaded)
+  (function() {
+    var canvas = document.getElementById('gridCanvas');
+    if (!canvas) {
+      console.log('Grid canvas not found, skipping background animation.');
+      return;
+    }
+    console.log('Initializing interactive grid...');
+    var ctx = canvas.getContext('2d');
+    var mouse = { x: -1000, y: -1000 };
+    var scrollY = window.pageYOffset;
+    
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', function(e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     });
-  });
-  
-  resize();
+    window.addEventListener('scroll', function() {
+      scrollY = window.pageYOffset;
+      var parallaxItems = document.querySelectorAll('[data-speed]');
+      parallaxItems.forEach(function (item) {
+        var speed = parseFloat(item.getAttribute('data-speed'));
+        var yPos = -(scrollY * speed);
+        item.style.transform = 'translateY(' + yPos + 'px)';
+      });
+    });
+    
+    resize();
 
-  var dotGap = 32;
-  var avoidanceRadius = 45;
-  var glowRadius = 110;
-  
-  function getAccentColor() {
-    var style = getComputedStyle(document.body);
-    var color = style.getPropertyValue('--accent').trim();
+    var dotGap = 32;
+    var avoidanceRadius = 45;
+    var glowRadius = 110;
     
-    // Check for hex
-    if (color.startsWith('#')) {
-      var r = parseInt(color.slice(1, 3), 16);
-      var g = parseInt(color.slice(3, 5), 16);
-      var b = parseInt(color.slice(5, 7), 16);
-      return { r: r, g: g, b: b };
-    }
-    
-    // Check for rgb
-    var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-    if (match) {
-      return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
-    }
-    
-    return { r: 0, g: 255, b: 136 };
-  }
-
-  var baseColor = getAccentColor();
-  var themeObserver = new MutationObserver(function() { 
-    baseColor = getAccentColor();
-    console.log('Grid color updated:', baseColor);
-  });
-  themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    var offsetY = -(scrollY * 0.1) % dotGap;
-    
-    for (var x = 0; x < canvas.width + dotGap; x += dotGap) {
-      for (var y = 0; y < canvas.height + dotGap; y += dotGap) {
-        var dotX = x;
-        var dotY = y + offsetY;
-        
-        var dx = dotX - mouse.x;
-        var dy = dotY - mouse.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        
-        var drawX = dotX;
-        var drawY = dotY;
-        var opacity = 0.15; // Slightly higher base opacity
-        var radius = 1.4;   // Slightly larger base radius
-        
-        if (dist < avoidanceRadius) {
-          var force = (avoidanceRadius - dist) / avoidanceRadius;
-          drawX += (dx / dist) * force * 12; 
-          drawY += (dy / dist) * force * 12;
-        }
-
-        if (dist < glowRadius) {
-          var glow = (glowRadius - dist) / glowRadius;
-          opacity += Math.pow(glow, 1.5) * 0.85; 
-          radius += glow * 1.3;
-        }
-        
-        ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
-        ctx.fill();
+    function getAccentColor() {
+      var style = getComputedStyle(document.body);
+      var color = style.getPropertyValue('--accent').trim();
+      if (color.startsWith('#')) {
+        var r = parseInt(color.slice(1, 3), 16);
+        var g = parseInt(color.slice(3, 5), 16);
+        var b = parseInt(color.slice(5, 7), 16);
+        return { r: r, g: g, b: b };
       }
+      var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+      if (match) {
+        return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
+      }
+      return { r: 0, g: 255, b: 136 };
     }
-    
-    requestAnimationFrame(animate);
-  }
-  
-  animate();
-})();
+
+    var baseColor = getAccentColor();
+    var themeObserver = new MutationObserver(function() { 
+      baseColor = getAccentColor();
+    });
+    themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var offsetY = -(scrollY * 0.1) % dotGap;
+      for (var x = 0; x < canvas.width + dotGap; x += dotGap) {
+        for (var y = 0; y < canvas.height + dotGap; y += dotGap) {
+          var dotX = x;
+          var dotY = y + offsetY;
+          var dx = dotX - mouse.x;
+          var dy = dotY - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var drawX = dotX;
+          var drawY = dotY;
+          var opacity = 0.15;
+          var radius = 1.4;
+          if (dist < avoidanceRadius) {
+            var force = (avoidanceRadius - dist) / avoidanceRadius;
+            drawX += (dx / dist) * force * 12; 
+            drawY += (dy / dist) * force * 12;
+          }
+          if (dist < glowRadius) {
+            var glow = (glowRadius - dist) / glowRadius;
+            opacity += Math.pow(glow, 1.5) * 0.85; 
+            radius += glow * 1.3;
+          }
+          ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+});
