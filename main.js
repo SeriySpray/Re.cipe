@@ -46,20 +46,23 @@ document.addEventListener('DOMContentLoaded', function() {
   var heroSub = document.getElementById('heroSub');
   var heroCta = document.getElementById('heroCta');
 
-  // Приховуємо елементи перед анімацією (Fail-safe: вони видимі в CSS)
+  // Приховуємо елементи перед анімацією (вони видимі в CSS за замовчуванням)
   if (heroSub) heroSub.style.opacity = '0';
   if (heroCta) heroCta.style.opacity = '0';
 
-  typeText(eyebrow, '// terminal-style recipe management', 35, function () {
-    if (heroSub) {
-      heroSub.style.transition = 'opacity 0.5s';
-      heroSub.style.opacity = '1';
-    }
-    if (heroCta) {
-      heroCta.style.transition = 'opacity 3s 0.2s';
-      heroCta.style.opacity = '1';
-    }
-  });
+  if (eyebrow) {
+    var originalText = eyebrow.textContent || '// terminal-style recipe management';
+    typeText(eyebrow, originalText, 35, function () {
+      if (heroSub) {
+        heroSub.style.transition = 'opacity 0.5s';
+        heroSub.style.opacity = '1';
+      }
+      if (heroCta) {
+        heroCta.style.transition = 'opacity 3s 0.2s';
+        heroCta.style.opacity = '1';
+      }
+    });
+  }
 
   // 4. SCROLL-REVEAL
   var revealElements = document.querySelectorAll('[data-reveal]');
@@ -163,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// 7. INTERACTIVE GRID CANVAS (Outside DOMContentLoaded to start ASAP, or inside if preferred)
+// 7. INTERACTIVE GRID CANVAS
 (function() {
   var canvas = document.getElementById('gridCanvas');
   if (!canvas) return;
@@ -200,17 +203,19 @@ document.addEventListener('DOMContentLoaded', function() {
   function getAccentColor() {
     var style = getComputedStyle(document.body);
     var color = style.getPropertyValue('--accent').trim();
+    
     if (color.startsWith('#')) {
       var r = parseInt(color.slice(1, 3), 16);
       var g = parseInt(color.slice(3, 5), 16);
       var b = parseInt(color.slice(5, 7), 16);
       return { r: r, g: g, b: b };
     }
-    // Handle rgb(r, g, b) format
+    
     var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
     if (match) {
       return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
     }
+    
     return { r: 0, g: 255, b: 136 };
   }
 
@@ -220,35 +225,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     var offsetY = -(scrollY * 0.1) % dotGap;
+    
     for (var x = 0; x < canvas.width + dotGap; x += dotGap) {
       for (var y = 0; y < canvas.height + dotGap; y += dotGap) {
         var dotX = x;
         var dotY = y + offsetY;
+        
         var dx = dotX - mouse.x;
         var dy = dotY - mouse.y;
         var dist = Math.sqrt(dx * dx + dy * dy);
+        
         var drawX = dotX;
         var drawY = dotY;
         var opacity = 0.12; 
         var radius = 1.3;
+        
         if (dist < avoidanceRadius) {
           var force = (avoidanceRadius - dist) / avoidanceRadius;
           drawX += (dx / dist) * force * 12; 
           drawY += (dy / dist) * force * 12;
         }
+
         if (dist < glowRadius) {
           var glow = (glowRadius - dist) / glowRadius;
           opacity += Math.pow(glow, 1.5) * 0.88; 
           radius += glow * 1.2;
         }
+        
         ctx.fillStyle = 'rgba(' + baseColor.r + ',' + baseColor.g + ',' + baseColor.b + ',' + Math.min(opacity, 1) + ')';
         ctx.beginPath();
         ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
         ctx.fill();
       }
     }
+    
     requestAnimationFrame(animate);
   }
+  
   animate();
 })();
