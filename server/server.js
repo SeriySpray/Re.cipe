@@ -11,15 +11,15 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+    console.log('[cors] Request from origin:', origin);
+    // Allow any origin for debugging, or narrow it down
+    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('seriyspray.github.io')) {
+      return callback(null, true);
     }
-    return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 app.use(express.json());
 
