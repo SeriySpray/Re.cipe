@@ -1,0 +1,74 @@
+<h2>Які поля у формі додання рецепту?</h2>
+<p class="subtitle">Зараз є: назва, інгредієнти, кроки, час. Reference.html показує КБЖУ.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="simple" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0d0d;padding:14px;font-family:'JetBrains Mono',monospace;border-bottom:1px solid #1a1a1a">
+      <div style="font-size:9px;color:#00ff88;margin-bottom:10px">// new_recipe</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:9px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">name</div>
+          <div style="font-size:11px;color:#e0e0e0">Борщ<span style="background:#00ff88;width:6px;height:10px;display:inline-block;vertical-align:middle;margin-left:2px"></span></div>
+        </div>
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:9px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">ingredients</div>
+          <div style="font-size:11px;color:#333">буряк, картопля...</div>
+        </div>
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:9px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">steps</div>
+          <div style="font-size:11px;color:#333">варити буряк 40 хв...</div>
+        </div>
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:9px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">cook_time_min</div>
+          <div style="font-size:11px;color:#333">45</div>
+        </div>
+      </div>
+      <div style="background:#00ff88;border-radius:8px;padding:8px;text-align:center;font-size:10px;font-weight:700;color:#000;margin-top:10px">[ save_recipe ]</div>
+    </div>
+    <div class="card-body">
+      <h3>A — Базові 4 поля</h3>
+      <p>name · ingredients · steps · cook_time. Просто і швидко, без зайвого.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="with-kbzu" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0d0d;padding:14px;font-family:'JetBrains Mono',monospace;border-bottom:1px solid #1a1a1a">
+      <div style="font-size:9px;color:#00ff88;margin-bottom:10px">// new_recipe</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:8px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">name</div>
+          <div style="font-size:11px;color:#e0e0e0">Борщ<span style="background:#00ff88;width:6px;height:10px;display:inline-block;vertical-align:middle;margin-left:2px"></span></div>
+        </div>
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:8px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">ingredients</div>
+          <div style="font-size:11px;color:#333">буряк, картопля...</div>
+        </div>
+        <div style="background:#111;border:1px solid #222;border-radius:8px;padding:8px 11px">
+          <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">steps</div>
+          <div style="font-size:11px;color:#333">варити буряк 40 хв...</div>
+        </div>
+        <div style="display:flex;gap:5px">
+          <div style="background:#111;border:1px solid #222;border-radius:8px;padding:8px 8px;flex:1">
+            <div style="font-size:7px;color:#444;text-transform:uppercase;margin-bottom:2px">time</div>
+            <div style="font-size:10px;color:#333">45</div>
+          </div>
+          <div style="background:#111;border:1px solid #222;border-radius:8px;padding:8px 8px;flex:1">
+            <div style="font-size:7px;color:#444;text-transform:uppercase;margin-bottom:2px">ккал</div>
+            <div style="font-size:10px;color:#333">320</div>
+          </div>
+          <div style="background:#111;border:1px solid #222;border-radius:8px;padding:8px 8px;flex:1">
+            <div style="font-size:7px;color:#444;text-transform:uppercase;margin-bottom:2px">білки</div>
+            <div style="font-size:10px;color:#333">12г</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#00ff88;border-radius:8px;padding:7px;text-align:center;font-size:10px;font-weight:700;color:#000;margin-top:8px">[ save_recipe ]</div>
+    </div>
+    <div class="card-body">
+      <h3>B — + КБЖУ поля</h3>
+      <p>Додаємо ккал, білки, жири, вуглеводи. Як у reference.html — відображаються у картці рецепту.</p>
+    </div>
+  </div>
+
+</div>

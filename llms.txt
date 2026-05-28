@@ -1,0 +1,37 @@
+# RE.cipe
+
+> A terminal-style recipe management system designed for developers and minimalist enthusiasts.
+
+RE.cipe provides a clean, monospaced interface for organizing, filtering, and planning meals. It leverages a Terminal User Interface (TUI) aesthetic to provide a high-efficiency workspace for culinary notes and meal planning.
+
+## Core Features
+
+- **TUI Dashboard**: Terminal-inspired interface with ASCII art and customizable themes.
+- **Recipe Management**: Create, edit, and organize recipes with detailed ingredients and cooking steps.
+- **Terminal Aesthetics**: JetBrains Mono font, blinking cursors, and monospaced layout.
+- **Meal Planning**: Structure your culinary workflow with a developer-centric perspective.
+- **Privacy First**: Secure authentication and personal recipe storage.
+
+## Key Pages
+
+- [Landing Page](https://re-cipe.example.com/index.html): Project overview, features, and interactive terminal demo.
+- [Authentication](https://re-cipe.example.com/auth.html): User login and registration portal.
+- [Workspace](https://re-cipe.example.com/app.html): Main dashboard for managing your recipe collection.
+
+## Technical Context
+
+- **Frontend**: Vanilla HTML5, CSS3, and JavaScript (No heavy frameworks).
+- **Typography**: JetBrains Mono (Primary monospaced font).
+- **Design Pattern**: Minimalist TUI (Terminal User Interface).
+- **Target Audience**: Developers, SysAdmins, and Tech Enthusiasts.
+
+## Semantic Core Keywords
+
+- Terminal-style recipe manager
+- TUI recipe management
+- ASCII art kitchen
+- Developer-friendly meal planning
+- CLI recipe manager
+- Digital cookbook for developers
+- Minimalist cooking app
+- Monospaced recipe UI

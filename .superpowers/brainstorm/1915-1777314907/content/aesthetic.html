@@ -1,0 +1,66 @@
+<h2>Яка естетика для нового app.html?</h2>
+<p class="subtitle">Це визначає весь візуальний напрямок — шрифт, радіуси, відчуття.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="terminal" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0d0d;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;border-bottom:1px solid #262626">
+      <div style="color:#555;margin-bottom:8px">// add recipe</div>
+      <div style="margin-bottom:6px">
+        <div style="color:#888;font-size:10px;margin-bottom:2px">&gt; name:</div>
+        <div style="background:#111;border:1px solid #262626;padding:6px 8px;color:#e0e0e0;border-radius:3px">Борщ_</div>
+      </div>
+      <div style="margin-bottom:6px">
+        <div style="color:#888;font-size:10px;margin-bottom:2px">&gt; ingredients:</div>
+        <div style="background:#111;border:1px solid #262626;padding:6px 8px;color:#e0e0e0;border-radius:3px"></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <div style="background:#00ff88;color:#000;padding:5px 10px;font-size:10px;font-weight:700;border-radius:3px">[ SAVE ]</div>
+        <div style="border:1px solid #262626;color:#555;padding:5px 10px;font-size:10px;border-radius:3px">[ CLEAR ]</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — TUI зберігається</h3>
+      <p>JetBrains Mono, термінальна сітка, квадратні кути, мінімальний радіус. Новий layout, стара душа.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="modern" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0d0d;padding:16px;font-family:'Inter','Roboto',system-ui,sans-serif;font-size:12px;border-bottom:1px solid #1a1a1a">
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:12px">Новий рецепт</div>
+      <div style="background:#111;border:1px solid #222;border-radius:10px;padding:10px 12px;margin-bottom:8px">
+        <div style="font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Назва</div>
+        <div style="font-size:12px;color:#fff">Борщ</div>
+      </div>
+      <div style="background:#111;border:1px solid #222;border-radius:10px;padding:10px 12px;margin-bottom:10px">
+        <div style="font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Інгредієнти</div>
+        <div style="font-size:12px;color:#2a2a2a">буряк, картопля...</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:8px;text-align:center;font-size:11px;font-weight:600;color:#000">Зберегти рецепт</div>
+    </div>
+    <div class="card-body">
+      <h3>B — Сучасний мінімалізм</h3>
+      <p>Inter/system-ui, 10px радіуси, м'якші поля. Стиль як у reference.html — clean dark app.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0d0d;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;border-bottom:1px solid #1a1a1a">
+      <div style="font-size:10px;color:#00ff88;margin-bottom:12px">// new_recipe</div>
+      <div style="background:#111;border:1px solid #222;border-radius:8px;padding:10px 12px;margin-bottom:8px">
+        <div style="font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">name</div>
+        <div style="font-size:12px;color:#e0e0e0">Борщ<span style="background:#00ff88;width:7px;height:11px;display:inline-block;vertical-align:middle;margin-left:2px"></span></div>
+      </div>
+      <div style="background:#111;border:1px solid #222;border-radius:8px;padding:10px 12px;margin-bottom:10px">
+        <div style="font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">ingredients</div>
+        <div style="font-size:12px;color:#333">буряк, картопля...</div>
+      </div>
+      <div style="background:#00ff88;border-radius:8px;padding:8px;text-align:center;font-size:10px;font-weight:700;color:#000">[ save_recipe ]</div>
+    </div>
+    <div class="card-body">
+      <h3>C — Гібрид (рекомендую)</h3>
+      <p>JetBrains Mono + м'якші радіуси 8px + акцентний колір + сучасні поля. Зберігає ДНК проекту, але виглядає як app.</p>
+    </div>
+  </div>
+
+</div>

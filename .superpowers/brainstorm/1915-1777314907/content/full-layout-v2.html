@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RE.cipe — v2 Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root {
+  --bg:      #080808;
+  --surface: #0e0e0e;
+  --card:    #111;
+  --border:  #1e1e1e;
+  --border2: #2a2a2a;
+  --accent:  #00ff88;
+  --text:    #d8d8d8;
+  --dim:     #444;
+  --muted:   #2a2a2a;
+  --font:    'JetBrains Mono', 'Courier New', monospace;
+  --r:       8px;
+}
+[data-theme="amber"]  { --accent: #ffb300; }
+[data-theme="cyan"]   { --accent: #00d4ff; }
+[data-theme="rose"]   { --accent: #ff4d6d; }
+[data-theme="violet"] { --accent: #a855f7; }
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Dot-grid background ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, #ffffff06 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Navbar ── */
+.navbar {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; gap: 20px;
+  padding: 0 20px; height: 48px;
+  background: rgba(8,8,8,0.96);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-size: 14px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.nav-sep { color: var(--muted); font-size: 11px; }
+.nav-user { font-size: 11px; color: var(--dim); }
+
+.theme-swatches {
+  display: flex; align-items: center; gap: 5px;
+  margin-left: auto;
+}
+.swatch {
+  width: 11px; height: 11px; border-radius: 50%;
+  cursor: pointer; border: 1.5px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.swatch:hover { transform: scale(1.25); }
+.swatch.on { border-color: #ffffff99; }
+
+.nav-logout {
+  margin-left: 16px;
+  font-size: 10px; color: var(--dim);
+  background: transparent; border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 5px 12px;
+  font-family: var(--font); cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  letter-spacing: 0.03em;
+}
+.nav-logout:hover { color: var(--text); border-color: var(--dim); }
+
+/* ── Workspace ── */
+.workspace {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 10px;
+  padding: 10px;
+  height: calc(100vh - 48px);
+}
+
+/* ── Panel chrome ── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 14px; height: 36px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.3);
+}
+.dot { width: 9px; height: 9px; border-radius: 50%; }
+.dot.r { background: #ff5f57; }
+.dot.y { background: #febc2e; }
+.dot.g { background: #28c840; }
+.panel-label {
+  font-size: 10px; color: var(--dim);
+  margin-left: 6px; letter-spacing: 0.04em;
+}
+
+.panel-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 14px; height: 26px;
+  border-top: 1px solid var(--border);
+  font-size: 9px; color: var(--muted);
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.25);
+  letter-spacing: 0.06em;
+}
+.sdot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 5px var(--accent);
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ══════════════════════════════════════════
+   LEFT PANEL — FORM
+═══════════════════════════════════════════ */
+.form-scroll {
+  flex: 1; overflow-y: auto; padding: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+
+/* section comment */
+.form-comment {
+  font-size: 9px; color: var(--dim);
+  letter-spacing: 0.08em;
+  padding: 0 2px;
+  margin-bottom: 2px;
+}
+
+.field {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 10px 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: text;
+  position: relative;
+}
+.field::before {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: var(--r);
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 0.2s;
+  pointer-events: none;
+}
+.field.focused {
+  border-color: var(--accent);
+}
+.field.focused::before {
+  box-shadow: 0 0 12px -3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.f-label {
+  font-size: 8px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.7px;
+  margin-bottom: 5px;
+}
+.f-value { font-size: 12px; color: var(--text); line-height: 1.5; }
+.f-placeholder { font-size: 12px; color: #252525; }
+.f-cursor {
+  display: inline-block;
+  width: 7px; height: 12px;
+  background: var(--accent);
+  vertical-align: middle; margin-left: 2px;
+  border-radius: 1px;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* textarea-style field */
+.field.tall .f-value { min-height: 38px; }
+
+.form-actions {
+  padding: 0 14px 12px;
+  display: flex; gap: 7px; flex-shrink: 0;
+}
+.btn-save {
+  flex: 1;
+  background: var(--accent);
+  color: #000; border: none;
+  border-radius: var(--r); padding: 10px;
+  font-size: 10px; font-weight: 700;
+  font-family: var(--font); cursor: pointer;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-save:hover { opacity: 0.88; }
+.btn-save:active { transform: scale(0.98); }
+.btn-clear {
+  background: transparent; color: var(--dim);
+  border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 10px 16px;
+  font-size: 10px; font-family: var(--font);
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-clear:hover { color: var(--text); border-color: var(--dim); }
+
+/* ══════════════════════════════════════════
+   RIGHT PANEL — MASTER-DETAIL
+═══════════════════════════════════════════ */
+.md-body {
+  flex: 1; display: grid;
+  grid-template-columns: 180px 1fr;
+  overflow: hidden;
+}
+
+/* List */
+.r-list {
+  border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 8px 6px;
+  display: flex; flex-direction: column; gap: 2px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+
+.r-item {
+  border-radius: 6px; padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border: 1px solid transparent;
+}
+.r-item:hover { background: rgba(255,255,255,0.03); }
+.r-item.active {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.r-item-top {
+  display: flex; align-items: baseline; gap: 0;
+  margin-bottom: 2px;
+}
+.r-prompt { font-size: 9px; color: var(--dim); margin-right: 5px; flex-shrink: 0; }
+.r-item.active .r-prompt { color: var(--accent); }
+.r-name { font-size: 11px; font-weight: 700; color: var(--text); flex: 1; }
+.r-item.active .r-name { color: var(--accent); }
+.r-time { font-size: 9px; color: var(--muted); }
+
+/* Detail */
+.r-detail {
+  padding: 16px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+
+.detail-head { padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.detail-name {
+  font-size: 17px; font-weight: 700; color: var(--text);
+  margin-bottom: 4px; letter-spacing: -0.02em;
+}
+.detail-meta { font-size: 10px; color: var(--dim); }
+
+.detail-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 11px 13px;
+}
+.detail-block .f-label { margin-bottom: 6px; }
+.detail-val {
+  font-size: 11px; color: #777;
+  line-height: 1.7;
+}
+
+.detail-foot {
+  margin-top: auto;
+  display: flex; gap: 7px;
+}
+.btn-edit {
+  flex: 1;
+  background: transparent; color: var(--dim);
+  border: 1px solid var(--border2); border-radius: var(--r);
+  padding: 8px; font-size: 10px; font-family: var(--font);
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-edit:hover { color: var(--text); border-color: var(--dim); }
+.btn-del {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 8px 14px; font-size: 10px; font-family: var(--font);
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-del:hover { color: #ff4d6d; border-color: #ff4d6d30; }
+
+/* empty state */
+.empty-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px; color: var(--muted);
+}
+.empty-icon { font-size: 22px; opacity: 0.4; }
+.empty-text { font-size: 10px; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <span class="logo">[RE.cipe]</span>
+  <span class="nav-sep">/</span>
+  <span class="nav-user">// vasyl</span>
+
+  <div class="theme-swatches">
+    <div class="swatch on"  style="background:#00ff88" onclick="setTheme('green', this)"></div>
+    <div class="swatch"     style="background:#ffb300" onclick="setTheme('amber', this)"></div>
+    <div class="swatch"     style="background:#00d4ff" onclick="setTheme('cyan', this)"></div>
+    <div class="swatch"     style="background:#ff4d6d" onclick="setTheme('rose', this)"></div>
+    <div class="swatch"     style="background:#a855f7" onclick="setTheme('violet', this)"></div>
+  </div>
+  <button class="nav-logout">&gt; logout</button>
+</nav>
+
+<!-- ── WORKSPACE ── -->
+<div class="workspace">
+
+  <!-- LEFT — ADD RECIPE -->
+  <div class="panel">
+    <div class="panel-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="panel-label">re.cipe — new_recipe</span>
+    </div>
+
+    <div class="form-scroll">
+      <div class="form-comment">// fill in fields and press save</div>
+
+      <div class="field focused" onclick="focusField(this)">
+        <div class="f-label">name</div>
+        <div class="f-value">Борщ<span class="f-cursor"></span></div>
+      </div>
+
+      <div class="field tall" onclick="focusField(this)">
+        <div class="f-label">ingredients</div>
+        <div class="f-placeholder">буряк, картопля, м'ясо, цибуля...</div>
+      </div>
+
+      <div class="field tall" onclick="focusField(this)">
+        <div class="f-label">steps</div>
+        <div class="f-placeholder">варити буряк 40 хв, додати картоплю...</div>
+      </div>
+
+      <div class="field" onclick="focusField(this)">
+        <div class="f-label">cook_time_min</div>
+        <div class="f-placeholder">45</div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-save">save_recipe</button>
+      <button class="btn-clear">clear</button>
+    </div>
+
+    <div class="panel-status">
+      <span class="sdot"></span>
+      <span>READY</span>
+      <span style="margin-left:auto">v0.2</span>
+    </div>
+  </div>
+
+  <!-- RIGHT — RECIPES -->
+  <div class="panel">
+    <div class="panel-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="panel-label">re.cipe — recipes (3)</span>
+    </div>
+
+    <div class="md-body">
+      <!-- List -->
+      <div class="r-list">
+        <div class="r-item active" onclick="selectRecipe(this, 0)">
+          <div class="r-item-top">
+            <span class="r-prompt">&gt;</span>
+            <span class="r-name">Борщ</span>
+          </div>
+          <div class="r-time">45 хв</div>
+        </div>
+        <div class="r-item" onclick="selectRecipe(this, 1)">
+          <div class="r-item-top">
+            <span class="r-prompt">&gt;</span>
+            <span class="r-name">Піца</span>
+          </div>
+          <div class="r-time">90 хв</div>
+        </div>
+        <div class="r-item" onclick="selectRecipe(this, 2)">
+          <div class="r-item-top">
+            <span class="r-prompt">&gt;</span>
+            <span class="r-name">Салат</span>
+          </div>
+          <div class="r-time">15 хв</div>
+        </div>
+      </div>
+
+      <!-- Detail -->
+      <div class="r-detail" id="detail">
+        <div class="detail-head">
+          <div class="detail-name">Борщ</div>
+          <div class="detail-meta">// 45 хв</div>
+        </div>
+
+        <div class="detail-block">
+          <div class="f-label">ingredients</div>
+          <div class="detail-val">буряк · картопля · м'ясо · цибуля · морква</div>
+        </div>
+
+        <div class="detail-block">
+          <div class="f-label">steps</div>
+          <div class="detail-val">Варити буряк 40 хв.<br>Додати картоплю.<br>Засмажити цибулю з морквою.<br>Поєднати все.</div>
+        </div>
+
+        <div class="detail-foot">
+          <button class="btn-edit">edit</button>
+          <button class="btn-del">delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-status">
+      <span class="sdot"></span>
+      <span>3 recipes</span>
+      <span style="margin-left:auto">vasyl &nbsp;·&nbsp; v0.2</span>
+    </div>
+  </div>
+</div>
+
+<script>
+var recipes = [
+  { name: 'Борщ',  time: '45 хв', ingredients: 'буряк · картопля · м\'ясо · цибуля · морква', steps: 'Варити буряк 40 хв.\nДодати картоплю.\nЗасмажити цибулю з морквою.\nПоєднати все.' },
+  { name: 'Піца',  time: '90 хв', ingredients: 'тісто · томатний соус · моцарела · базилік', steps: 'Розкачати тісто.\nНанести соус.\nПосипати сиром.\nВипікати 25 хв при 220°C.' },
+  { name: 'Салат', time: '15 хв', ingredients: 'листовий салат · помідори · огірки · оливкова олія', steps: 'Помити овочі.\nНарізати.\nЗаправити оливковою олією.\nПосолити.' }
+];
+
+function selectRecipe(el, idx) {
+  document.querySelectorAll('.r-item').forEach(function(i){ i.classList.remove('active'); });
+  el.classList.add('active');
+  var r = recipes[idx];
+  var d = document.getElementById('detail');
+  d.querySelector('.detail-name').textContent = r.name;
+  d.querySelector('.detail-meta').textContent = '// ' + r.time;
+  var blocks = d.querySelectorAll('.detail-block');
+  blocks[0].querySelector('.detail-val').textContent = r.ingredients;
+  blocks[1].querySelector('.detail-val').innerHTML = r.steps.split('\n').join('<br>');
+  d.style.opacity = '0';
+  d.style.transform = 'translateY(4px)';
+  setTimeout(function(){
+    d.style.transition = 'opacity 0.18s, transform 0.18s';
+    d.style.opacity = '1';
+    d.style.transform = 'translateY(0)';
+  }, 10);
+}
+
+function focusField(el) {
+  document.querySelectorAll('.field').forEach(function(f){ f.classList.remove('focused'); });
+  el.classList.add('focused');
+}
+
+function setTheme(name, el) {
+  document.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('on'); });
+  el.classList.add('on');
+  if (name === 'green') {
+    document.body.removeAttribute('data-theme');
+  } else {
+    document.body.setAttribute('data-theme', name);
+  }
+}
+</script>
+</body>
+</html>
