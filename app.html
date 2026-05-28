@@ -24,11 +24,11 @@
     <span class="nav-sep">/</span>
     <span class="nav-user" id="navUser">// guest</span>
     <div class="theme-swatches">
-      <button class="swatch s-green" data-theme-name="green" title="green"></button>
-      <button class="swatch s-amber" data-theme-name="amber" title="amber"></button>
-      <button class="swatch s-cyan"  data-theme-name="cyan"  title="cyan"></button>
-      <button class="swatch s-rose"  data-theme-name="rose"  title="rose"></button>
-      <button class="swatch s-violet" data-theme-name="violet" title="violet"></button>
+      <button class="swatch s-green" data-theme-name="green" title="green" aria-label="Switch to green theme"></button>
+      <button class="swatch s-amber" data-theme-name="amber" title="amber" aria-label="Switch to amber theme"></button>
+      <button class="swatch s-cyan"  data-theme-name="cyan"  title="cyan"  aria-label="Switch to cyan theme"></button>
+      <button class="swatch s-rose"  data-theme-name="rose"  title="rose"  aria-label="Switch to rose theme"></button>
+      <button class="swatch s-violet" data-theme-name="violet" title="violet" aria-label="Switch to violet theme"></button>
     </div>
     <button class="btn btn-ghost" id="btnLogout">&gt; logout</button>
   </nav>
@@ -44,9 +44,9 @@
     <!-- LEFT: ADD / EDIT RECIPE -->
     <div class="panel" id="formPanel">
       <div class="panel-bar">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
+        <span class="dot red" aria-label="Close"></span>
+        <span class="dot yellow" aria-label="Minimize"></span>
+        <span class="dot green" aria-label="Maximize"></span>
         <span class="panel-label" id="formPanelLabel">re.cipe — new_recipe</span>
       </div>
 
@@ -86,7 +86,7 @@
       </div>
 
       <div class="panel-status">
-        <span class="sdot"></span>
+        <span class="sdot" aria-label="Status indicator"></span>
         <span id="formStatus">READY</span>
         <span class="panel-status-right">v0.2</span>
       </div>
@@ -95,9 +95,9 @@
     <!-- RIGHT: RECIPES MASTER-DETAIL -->
     <div class="panel" id="recipesPanel">
       <div class="panel-bar">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
+        <span class="dot red" aria-label="Close"></span>
+        <span class="dot yellow" aria-label="Minimize"></span>
+        <span class="dot green" aria-label="Maximize"></span>
         <span class="panel-label" id="recipesPanelLabel">re.cipe — recipes (0)</span>
       </div>
 

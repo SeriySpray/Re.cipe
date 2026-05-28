@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RE.cipe — Your Recipes, Your Terminal</title>
-  <meta name="description" content="RE.cipe — A terminal-style recipe manager. Organize, filter, and plan your meals with a clean, developer-friendly interface." />
+  <meta name="description" content="RE.cipe — A terminal-style recipe manager. Organize, filter, and plan your meals with a clean, developer-friendly TUI interface." />
+  <meta name="keywords" content="terminal-style recipe manager, TUI recipe management, ASCII art kitchen, developer-friendly meal planning, CLI recipe manager, digital cookbook for developers, minimalist cooking app, monospaced recipe UI" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
@@ -686,9 +687,9 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
       <h2>See it in action</h2>
       <div class="terminal">
         <div class="term-bar">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
+          <span class="dot red" aria-label="Close"></span>
+          <span class="dot yellow" aria-label="Minimize"></span>
+          <span class="dot green" aria-label="Maximize"></span>
           <span class="term-title">re.cipe — v0.1</span>
         </div>
         <div class="term-body" id="termDemo">
@@ -763,16 +764,16 @@ label[data-theme="violet"] { --switch-color: #a855f7; }
         <input type="radio" name="theme" id="t-violet" class="theme-radio" />
 
         <div class="theme-row">
-          <label for="t-green"  class="switch" data-theme="green" ><span class="switch-dot" style="background:#00ff88"></span>green</label>
-          <label for="t-amber"  class="switch" data-theme="amber" ><span class="switch-dot" style="background:#ffb300"></span>amber</label>
-          <label for="t-cyan"   class="switch" data-theme="cyan"  ><span class="switch-dot" style="background:#00d4ff"></span>cyan</label>
-          <label for="t-rose"   class="switch" data-theme="rose"  ><span class="switch-dot" style="background:#ff4d6d"></span>rose</label>
-          <label for="t-violet" class="switch" data-theme="violet"><span class="switch-dot" style="background:#a855f7"></span>violet</label>
+          <label for="t-green"  class="switch" data-theme="green" aria-label="Switch to green theme"><span class="switch-dot" style="background:#00ff88"></span>green</label>
+          <label for="t-amber"  class="switch" data-theme="amber" aria-label="Switch to amber theme"><span class="switch-dot" style="background:#ffb300"></span>amber</label>
+          <label for="t-cyan"   class="switch" data-theme="cyan"  aria-label="Switch to cyan theme"><span class="switch-dot" style="background:#00d4ff"></span>cyan</label>
+          <label for="t-rose"   class="switch" data-theme="rose"  aria-label="Switch to rose theme"><span class="switch-dot" style="background:#ff4d6d"></span>rose</label>
+          <label for="t-violet" class="switch" data-theme="violet" aria-label="Switch to violet theme"><span class="switch-dot" style="background:#a855f7"></span>violet</label>
         </div>
 
         <div class="terminal theme-terminal">
           <div class="term-bar">
-            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="dot red" aria-label="Close"></span><span class="dot yellow" aria-label="Minimize"></span><span class="dot green" aria-label="Maximize"></span>
             <span class="term-title">~/.recipe/config</span>
           </div>
           <div class="term-body">
